@@ -30,7 +30,7 @@ model User {
   isVerified          Boolean   @default(false)
   verificationToken   String?
   passwordResetToken  String?
-  passwordResetExpiry String?
+  passwordResetExpiry DateTime?
   image               String?
   createdAt           DateTime  @default(now())
   updatedAt           DateTime  @updatedAt
