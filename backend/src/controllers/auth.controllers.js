@@ -5,7 +5,7 @@ import { userRole } from "../generated/prisma/index.js";
 import jwt from "jsonwebtoken";
 
 export const registerUser = async (req, res) => {
-  const { email, password, name } = req.body;
+  const { email, password, name, role } = req.body;
 
   try {
     // check existing
@@ -30,7 +30,7 @@ export const registerUser = async (req, res) => {
         email,
         password: hashedPassword,
         name,
-        role: userRole.USER,
+        role: role.toUpperCase(),
       },
     });
 
@@ -144,7 +144,7 @@ export const getMe = async (req, res) => {
   try {
     res.status(200).json({
       success: true,
-      message: "User authenticated successfully",
+      message: "User fetched successfully",
       user: req.user,
     });
   } catch (error) {
@@ -156,4 +156,37 @@ export const getMe = async (req, res) => {
   }
 };
 
+export const updateProfile = async (req, res) => {
+  const { name, image, password } = req.body;
+  try {
+    const updatedData = { name, image };
+    if (password) {
+      updatedData.password = await bcrypt.hash(password, 10);
+    }
 
+    const updatedUser = await db.user.update({
+      where: {
+        id: req.user.id,
+      },
+      data: updatedData,
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "Profile updated successfully",
+      user: {
+        id: updatedUser.id,
+        email: updatedUser.email,
+        name: updatedUser.name,
+        role: updatedUser.role,
+        image: updatedUser.image,
+      },
+    });
+  } catch (error) {
+    console.error("Error updating user:", error);
+    res.status(500).json({
+      success: false,
+      error: "Error updating user",
+    });
+  }
+};
