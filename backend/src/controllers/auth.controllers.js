@@ -1,6 +1,6 @@
 import express from "express";
 import bcrypt from "bcryptjs";
-import db from "../libs/db.js";
+import db from "../libs/db.libs.js";
 import { userRole } from "../generated/prisma/index.js";
 import jwt from "jsonwebtoken";
 

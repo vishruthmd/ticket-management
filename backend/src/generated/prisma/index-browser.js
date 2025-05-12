@@ -132,6 +132,23 @@ exports.Prisma.UserScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.TicketScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  description: 'description',
+  department: 'department',
+  location: 'location',
+  deviceId: 'deviceId',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  coordinatorId: 'coordinatorId',
+  technicianId: 'technicianId',
+  assignedAt: 'assignedAt',
+  resolvedAt: 'resolvedAt',
+  remarks: 'remarks'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -152,8 +169,36 @@ exports.userRole = exports.$Enums.userRole = {
   COORDINATOR: 'COORDINATOR'
 };
 
+exports.Department = exports.$Enums.Department = {
+  ISE: 'ISE',
+  CSE: 'CSE',
+  AIML: 'AIML',
+  BT: 'BT',
+  CV: 'CV',
+  ME: 'ME',
+  ETE: 'ETE',
+  EIE: 'EIE',
+  ECE: 'ECE',
+  ASE: 'ASE',
+  IDRC: 'IDRC',
+  LIB: 'LIB',
+  CMT: 'CMT',
+  MCA: 'MCA',
+  ADMIN_BLOCK: 'ADMIN_BLOCK',
+  PHY: 'PHY',
+  CHEM: 'CHEM',
+  MATH: 'MATH'
+};
+
+exports.TicketStatus = exports.$Enums.TicketStatus = {
+  OPEN: 'OPEN',
+  IN_PROGRESS: 'IN_PROGRESS',
+  CLOSED: 'CLOSED'
+};
+
 exports.Prisma.ModelName = {
-  User: 'User'
+  User: 'User',
+  Ticket: 'Ticket'
 };
 
 /**

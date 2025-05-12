@@ -1,7 +1,20 @@
-import { createRateLimiter } from "../libs/rate-limitter.js";
+import { createRateLimiter } from "../libs/rate-limitter.libs.js";
 
-const registerLimiter = createRateLimiter(3, 10);
-const loginLimiter = createRateLimiter(5, 20);
+//general
 const generalLimiter = createRateLimiter(20, 100);
 
-export { registerLimiter, loginLimiter, generalLimiter };
+// auth limits
+const registerLimiter = createRateLimiter(3, 10);
+const loginLimiter = createRateLimiter(5, 20);
+
+// ticket limits
+const createTicketLimiter = createRateLimiter(5, 10);
+const updateTicketLimiter = createRateLimiter(5, 10);
+
+export {
+  registerLimiter,
+  loginLimiter,
+  generalLimiter,
+  createTicketLimiter,
+  updateTicketLimiter,
+};

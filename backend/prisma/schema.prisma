@@ -20,6 +20,32 @@ enum userRole {
   COORDINATOR
 }
 
+enum Department {
+  ISE
+  CSE
+  AIML
+  BT
+  CV
+  ME
+  ETE
+  EIE
+  ECE
+  ASE
+  IDRC
+  LIB
+  CMT
+  MCA
+  ADMIN_BLOCK
+  PHY
+  CHEM
+  MATH
+}
+
+enum TicketStatus {
+  OPEN
+  IN_PROGRESS
+  CLOSED
+}
 
 model User {
   id                  String    @id @default(cuid())
@@ -34,5 +60,38 @@ model User {
   image               String?
   createdAt           DateTime  @default(now())
   updatedAt           DateTime  @updatedAt
+
+  // relations
+  coordinatorTickets Ticket[] @relation("CoordinatorTickets")
+  technicianTickets  Ticket[] @relation("TechnicianTickets")
 }
 
+model Ticket {
+  id          String       @id @default(cuid())
+  title       String
+  description String
+  department  Department
+  location    String
+  deviceId    String
+  status      TicketStatus @default(OPEN)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  coordinatorId String
+  technicianId  String?
+
+  // relations
+  coordinator User  @relation("CoordinatorTickets", fields: [coordinatorId], references: [id])
+  technician  User? @relation("TechnicianTickets", fields: [technicianId], references: [id])
+
+  assignedAt DateTime?
+  resolvedAt DateTime?
+  remarks    String?
+
+  // indexes for efficient querying
+  @@index([status])
+  @@index([technicianId])
+  @@index([coordinatorId])
+  @@index([department])
+}

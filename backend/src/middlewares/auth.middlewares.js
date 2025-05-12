@@ -1,10 +1,5 @@
 import jwt from "jsonwebtoken";
-import db from "../libs/db.js";
-import {
-  registerSchema,
-  loginSchema,
-  updateProfileSchema,
-} from "../libs/validator.js";
+import db from "../libs/db.libs.js";
 
 const isLoggedIn = async (req, res, next) => {
   try {
@@ -60,16 +55,9 @@ const isLoggedIn = async (req, res, next) => {
 const isAdmin = async (req, res, next) => {
   try {
     const userId = req.user.id;
-    const user = await db.user.findUnique({
-      where: {
-        id: userId,
-      },
-      select: {
-        role: true,
-      },
-    });
+    const userRole = req.user.role;
 
-    if (!user || user.role !== "ADMIN") {
+    if (userRole !== "ADMIN") {
       return res.status(403).json({
         success: false,
         error: "Access denied, admins only",
@@ -85,46 +73,26 @@ const isAdmin = async (req, res, next) => {
   }
 };
 
-const validateRegisterInputs = (req, res, next) => {
-  const result = registerSchema.safeParse(req.body);
-  if (result.success) {
+const isAdminOrCoordinator = async (req, res, next) => {
+  try {
+    const userId = req.user.id;
+    const userRole = req.user.role.toUpperCase();
+
+    if (userRole !== "ADMIN" && userRole !== "COORDINATOR") {
+      return res.status(403).json({
+        success: false,
+        error: "Access denied, admins or coordinators only",
+      });
+    }
     next();
-  } else {
-    res.status(400).json({
+  } catch (error) {
+    console.error("Error checking admin or coordinator role", error);
+    res.status(500).json({
       success: false,
-      error: result.error.issues,
+      message: "Error checking admin or coordinator role",
     });
   }
 };
 
-const validateLoginInputs = (req, res, next) => {
-  const result = loginSchema.safeParse(req.body);
-  if (result.success) {
-    next();
-  } else {
-    res.status(400).json({
-      success: false,
-      error: result.error.issues,
-    });
-  }
-};
 
-const validateUpdateProfileInputs = (req, res, next) => {
-  const result = updateProfileSchema.safeParse(req.body);
-  if (result.success) {
-    next();
-  } else {
-    res.status(400).json({
-      success: false,
-      error: result.error.issues,
-    });
-  }
-};
-
-export {
-  isLoggedIn,
-  isAdmin,
-  validateRegisterInputs,
-  validateLoginInputs,
-  validateUpdateProfileInputs,
-};
+export { isLoggedIn, isAdmin, isAdminOrCoordinator };

@@ -1,7 +1,12 @@
 import rateLimit from "express-rate-limit";
 
-export const createRateLimiter = (developmentLimit, productionLimit, windowMs = 60 * 1000) => {
-  const maxRequests = (process.env.NODE_ENV === "production") ? productionLimit : developmentLimit;
+export const createRateLimiter = (
+  developmentLimit,
+  productionLimit,
+  windowMs = 60 * 1000
+) => {
+  const maxRequests =
+    process.env.NODE_ENV === "production" ? productionLimit : developmentLimit;
   return rateLimit({
     windowMs,
     max: maxRequests,

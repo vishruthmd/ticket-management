@@ -6,13 +6,12 @@ import {
   registerUser,
   updateProfile,
 } from "../controllers/auth.controllers.js";
+import { isLoggedIn, isAdmin } from "../middlewares/auth.middlewares.js";
 import {
-  isLoggedIn,
-  isAdmin,
   validateRegisterInputs,
   validateLoginInputs,
   validateUpdateProfileInputs,
-} from "../middlewares/auth.middlewares.js";
+} from "../middlewares/auth.validator.middlewares.js";
 
 import {
   registerLimiter,
@@ -40,5 +39,6 @@ authRoutes.put(
   validateUpdateProfileInputs,
   updateProfile
 );
+
 
 export default authRoutes;
