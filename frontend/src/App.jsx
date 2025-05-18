@@ -7,6 +7,7 @@ import { Toaster } from "react-hot-toast";
 import { useAuthStore } from "./store/useAuthStore";
 import { Loader } from "lucide-react";
 import Layout from "./layout/Layout";
+import LayoutCoordinator from "./layout/LayoutCoordinator";
 
 
 const App = () => {
@@ -31,9 +32,24 @@ const App = () => {
         <Route path="/" element={<Layout />}>
           <Route
             index
-            element={authUser ? <HomePage /> : <Navigate to="/login" />}
+            element={
+              authUser ? (
+                authUser.role === "COORDINATOR" ? (
+                  <LayoutCoordinator/>
+                ) : authUser.role === "ADMIN" ? (
+                  <LayoutAdmin />
+                ) : authUser.role === "Technician" ? (
+                  <LayoutTechnician />
+                ) : (
+                  <LoginPage />
+                )
+              ) : (
+                <LoginPage />
+              )
+            }
           />
         </Route>
+        
         <Route
           path="/login"
           element={authUser ? <Navigate to="/" /> : <LoginPage />}

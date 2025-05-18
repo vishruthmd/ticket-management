@@ -1,15 +1,19 @@
 import React, { use } from "react";
 import { useAuthStore } from "../store/useAuthStore";
+import { useNavigate } from "react-router-dom";
 
 const LogoutButton = ({ children }) => {
+  
+  const navigate = useNavigate();
   const { logout } = useAuthStore();
-
   const onLogout = async () => {
     await logout();
+    navigate("/login");
+
   };
 
   return (
-    <button className="btn btn-primary" onClick={onLogout}>
+    <button className="btn btn-primary" onClick={onLogout }>
       {children}
     </button>
   );
