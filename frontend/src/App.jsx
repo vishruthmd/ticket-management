@@ -8,7 +8,9 @@ import { useAuthStore } from "./store/useAuthStore";
 import { Loader } from "lucide-react";
 import Layout from "./layout/Layout";
 import LayoutCoordinator from "./layout/LayoutCoordinator";
-
+import CreateTicketPage from "./pages/CreateTicketPage";
+import ViewTicketPage from "./pages/ViewTicketPage";
+import ProtectedRoute from "./store/ProtectedRoute";
 
 const App = () => {
   const { authUser, isCheckingAuth, checkAuth } = useAuthStore();
@@ -49,7 +51,23 @@ const App = () => {
             }
           />
         </Route>
-        
+
+        <Route
+          path="/create-ticket"
+          element={
+            <ProtectedRoute allowedRoles={["COORDINATOR"]}>
+              <CreateTicketPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/view-tickets"
+          element={
+            <ProtectedRoute allowedRoles={["COORDINATOR"]}>
+              <ViewTicketPage />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/login"
           element={authUser ? <Navigate to="/" /> : <LoginPage />}
