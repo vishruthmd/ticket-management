@@ -52,6 +52,7 @@ const App = () => {
           />
         </Route>
 
+        { /* Coordinator routes */}
         <Route
           path="/create-ticket"
           element={
@@ -68,6 +69,17 @@ const App = () => {
             </ProtectedRoute>
           }
         />
+
+        { /* Admin routes
+          create-user
+          assign-technician
+          view-technicians
+          view-tickets
+          view-coordinators
+
+        */}
+
+        {/* public routes */}
         <Route
           path="/login"
           element={authUser ? <Navigate to="/" /> : <LoginPage />}

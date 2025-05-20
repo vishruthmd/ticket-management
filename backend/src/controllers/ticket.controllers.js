@@ -227,7 +227,7 @@ const getTicketById = async (req, res) => {
 };
 
 const setStatusToInProgress = async (req, res) => {
-  const { id, userId } = req.params;
+  const { id, technicianId } = req.params;
 
   try {
     const updatedTicket = await db.ticket.update({
@@ -235,7 +235,7 @@ const setStatusToInProgress = async (req, res) => {
       data: {
         status: "IN_PROGRESS",
         technician: {
-          connect: { id: userId },
+          connect: { id: technicianId },
         },
       },
     });
