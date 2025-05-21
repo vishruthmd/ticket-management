@@ -31,7 +31,7 @@ const ViewTicketsAdmin = () => {
         <div className="card bg-base-100 shadow-xl">
           <div className="card-body">
             <div className="text-center mb-6">
-              <h1 className="text-4xl font-bold text-primary pt-13">All Tickets</h1>
+              <h1 className="text-4xl font-bold text-primary pt-18">All Tickets</h1>
               <p className="text-sm text-gray-500 mt-2">Admin view of all tickets</p>
             </div>
 
