@@ -85,4 +85,54 @@ const updateUser = async (req, res) => {
   }
 };
 
-export { getAllTechnicians, getAllCoordinators, getUserById, updateUser };
+const createUser = async (req, res) => {
+  const { email, password, name, role } = req.body;
+
+  try {
+    // check existing
+    const existingUser = await db.user.findUnique({
+      where: {
+        email,
+      },
+    });
+
+    if (existingUser) {
+      return res.status(409).json({
+        success: false,
+        error: "user already exists",
+      });
+    }
+    // hash the password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // create new user with hashed pw
+    const newUser = await db.user.create({
+      data: {
+        email,
+        password: hashedPassword,
+        name,
+        role: role.toUpperCase(),
+      },
+    });
+
+    res.status(201).json({
+      success: true,
+      message: "user created successfully",
+      user: {
+        id: newUser.id,
+        email: newUser.email,
+        name: newUser.name,
+        role: newUser.role,
+        image: newUser.image,
+      },
+    });
+  } catch (error) {
+    console.log("error creating user", error);
+    res.status(500).json({
+      success: false,
+      error: "Error creating a user",
+    });
+  }
+}
+
+export { getAllTechnicians, getAllCoordinators, getUserById, updateUser, createUser };

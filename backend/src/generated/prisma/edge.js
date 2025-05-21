@@ -183,7 +183,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "E:\\Ticketing_final\\ticket-management\\backend\\src\\generated\\prisma",
+      "value": "/Users/vishruth/Documents/dev/trial-frontend/ticket-management/backend/src/generated/prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -192,17 +192,16 @@ const config = {
     "binaryTargets": [
       {
         "fromEnvVar": null,
-        "value": "windows",
+        "value": "darwin-arm64",
         "native": true
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "E:\\Ticketing_final\\ticket-management\\backend\\prisma\\schema.prisma",
+    "sourceFilePath": "/Users/vishruth/Documents/dev/trial-frontend/ticket-management/backend/prisma/schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
-    "rootEnvPath": "../../../.env",
-    "schemaEnvPath": "../../../.env"
+    "rootEnvPath": null
   },
   "relativePath": "../../../prisma",
   "clientVersion": "6.6.0",
@@ -211,7 +210,7 @@ const config = {
     "db"
   ],
   "activeProvider": "postgresql",
-  "postinstall": false,
+  "postinstall": true,
   "inlineDatasources": {
     "db": {
       "url": {
