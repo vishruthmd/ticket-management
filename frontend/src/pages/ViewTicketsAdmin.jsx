@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { axiosInstance } from "../libs/axios.libs.js";
-import Navbar from "../components/Navbar.jsx";
-import NavbarCoordinator from "../components/NavbarCoordinator.jsx";
+import NavbarAdmin from "../components/NavbarAdmin.jsx";
 
-const ViewTicketPage = () => {
+const ViewTicketsAdmin = () => {
   const [tickets, setTickets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [fetchError, setFetchError] = useState(null);
@@ -12,10 +11,10 @@ const ViewTicketPage = () => {
   useEffect(() => {
     const fetchTickets = async () => {
       try {
-        const response = await axiosInstance.get("/tickets/coordinator-tickets");
+        const response = await axiosInstance.get("/tickets/get-all-tickets");
         setTickets(response.data.tickets || []);
       } catch (error) {
-        console.error("Error fetching tickets:", error);
+        console.error("Error fetching admin tickets:", error);
         setFetchError("Failed to fetch tickets. Please try again.");
       } finally {
         setLoading(false);
@@ -27,15 +26,13 @@ const ViewTicketPage = () => {
 
   return (
     <div className="min-h-screen w-full">
-      
+      <NavbarAdmin />
       <div className="max-w-screen-2xl mx-auto px-4 py-8">
         <div className="card bg-base-100 shadow-xl">
-          <NavbarCoordinator/>
           <div className="card-body">
             <div className="text-center mb-6">
-              
-              <h1 className="text-4xl font-bold text-primary pt-13">My Tickets</h1>
-              <p className="text-sm text-gray-500 mt-2">Here are the tickets you have raised</p>
+              <h1 className="text-4xl font-bold text-primary pt-13">All Tickets</h1>
+              <p className="text-sm text-gray-500 mt-2">Admin view of all tickets</p>
             </div>
 
             {loading ? (
@@ -56,6 +53,7 @@ const ViewTicketPage = () => {
                       <th>Location</th>
                       <th>Device ID</th>
                       <th>Status</th>
+                      <th>Coordinator</th>
                       <th>Technician</th>
                       <th>Last Updated</th>
                       <th>Actions</th>
@@ -81,6 +79,7 @@ const ViewTicketPage = () => {
                             {ticket.status.replace("_", " ")}
                           </span>
                         </td>
+                        <td>{ticket.coordinator?.name || "N/A"}</td>
                         <td>{ticket.technician?.name || "Not Assigned"}</td>
                         <td>{new Date(ticket.updatedAt).toLocaleString()}</td>
                         <td>
@@ -101,7 +100,7 @@ const ViewTicketPage = () => {
         </div>
       </div>
 
-      {/* Ticket Detail Modal */}
+      {/* Modal for viewing ticket details */}
       {selectedTicket && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white w-full max-w-md max-h-[80vh] overflow-y-auto rounded-lg shadow-lg p-6 relative">
@@ -115,10 +114,9 @@ const ViewTicketPage = () => {
             </button>
             <div className="space-y-2 text-sm">
               {Object.entries(selectedTicket).map(([key, value]) => {
-                // Flatten known object values
                 const displayValue =
                   typeof value === "object"
-                    ? key === "technician" && value?.name
+                    ? (key === "technician" || key === "coordinator") && value?.name
                       ? value.name
                       : Array.isArray(value)
                       ? value.join(", ")
@@ -148,4 +146,4 @@ const ViewTicketPage = () => {
   );
 };
 
-export default ViewTicketPage;
+export default ViewTicketsAdmin;

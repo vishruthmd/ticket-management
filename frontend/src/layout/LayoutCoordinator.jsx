@@ -7,8 +7,9 @@ import CreateTicketPage from "../pages/CreateTicketPage";
 const LayoutCoordinator = () => {
   return (
     <div>
+      <CreateTicketPage/>
       <NavbarCoordinator />
-      <Outlet />
+      
     </div>
   );
 };

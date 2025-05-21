@@ -52,7 +52,7 @@ ticketRoutes.get("/in-progress-tickets", isLoggedIn, getAllInProgressTickets);
 ticketRoutes.get("/closed-tickets", isLoggedIn, getAllClosedTickets);
 ticketRoutes.get("/technician-tickets", isLoggedIn, getAllTechnicianTickets);
 ticketRoutes.get("/coordinator-tickets", isLoggedIn, getAllCoordinatorTickets);
-ticketRoutes.put("/set-to-in-progress/:id/:userId", isLoggedIn, isAdmin, isOpen, setStatusToInProgress);
+ticketRoutes.put("/set-to-in-progress/:id/:technicianId", isLoggedIn, isAdmin, isOpen, setStatusToInProgress);
 ticketRoutes.put("/set-to-closed/:id",  isInProgress, setStatusToClosed);
 
 export default ticketRoutes;

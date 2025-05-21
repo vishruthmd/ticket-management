@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { axiosInstance } from "../libs/axios.libs.js";
+import NavbarCoordinator from '../components/NavbarCoordinator.jsx';
 
 // Assuming you have a function or hook to get the auth token, e.g., from your auth store
 // import { useAuth } from '../hooks/useAuth'; // Example hook
@@ -82,12 +83,14 @@ const handleSubmit = async (e) => {
 
 
   return (
+    
     <div className="container mx-auto p-4 md:p-8">
+      <NavbarCoordinator />
       {/* Card Container for better visual grouping */}
       <div className="card bg-base-100 shadow-xl p-6 md:p-8">
         <div className="card-body">
           <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold text-primary">Create Support Ticket</h1>
+            <h1 className="text-4xl font-bold text-primary pt-4" >Create Support Ticket</h1>
             <p className="text-sm text-gray-500 mt-2">Please fill all the required fields to submit your ticket</p>
           </div>
 

@@ -10,7 +10,7 @@ const NavbarCoordinator = () => {
   
   return (
     <div className="fixed top-6 left-1/2 transform -translate-x-1/2 z-50 w-[90vw] max-w-6xl">
-      <div className="bg-base-100 bg-opacity-90 backdrop-blur-md shadow-xl border border-gray-200 rounded-full px-6 py-3">
+      <div className="bg-base-100 bg-opacity-90 backdrop-blur-md shadow-xl border border-gray-700 rounded-full px-6 py-3">
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 text-xl font-bold">
@@ -29,7 +29,7 @@ const NavbarCoordinator = () => {
             </Link>
             
             <Link
-              to="/view-tickets"
+              to="/view-tickets-coordinator"
               className="btn btn-sm rounded-full btn-ghost hover:bg-primary hover:text-white flex gap-2"
             >
               <List className="w-4 h-4" />

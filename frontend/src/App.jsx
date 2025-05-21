@@ -11,6 +11,10 @@ import LayoutCoordinator from "./layout/LayoutCoordinator";
 import CreateTicketPage from "./pages/CreateTicketPage";
 import ViewTicketPage from "./pages/ViewTicketPage";
 import ProtectedRoute from "./store/ProtectedRoute";
+import LayoutAdmin from "./layout/LayoutAdmin";
+import AssignTechnicianPage from "./pages/AssignTechnicianPage";
+import ViewTicketsAdmin from "./pages/ViewTicketsAdmin";
+
 
 const App = () => {
   const { authUser, isCheckingAuth, checkAuth } = useAuthStore();
@@ -40,7 +44,7 @@ const App = () => {
                   <LayoutCoordinator/>
                 ) : authUser.role === "ADMIN" ? (
                   <LayoutAdmin />
-                ) : authUser.role === "Technician" ? (
+                ) : authUser.role === "TECHNICIAN" ? (
                   <LayoutTechnician />
                 ) : (
                   <LoginPage />
@@ -62,7 +66,7 @@ const App = () => {
           }
         />
         <Route
-          path="/view-tickets"
+          path="/view-tickets-coordinator"
           element={
             <ProtectedRoute allowedRoles={["COORDINATOR"]}>
               <ViewTicketPage />
@@ -76,9 +80,25 @@ const App = () => {
           view-technicians
           view-tickets
           view-coordinators
-
         */}
+        <Route
+          path="/assign-technician"
+          element={
+            <ProtectedRoute allowedRoles={["ADMIN"]}>
+              <AssignTechnicianPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/view-tickets-admin"
+          element={
+            <ProtectedRoute allowedRoles={["ADMIN"]}>
+              <ViewTicketsAdmin />
+            </ProtectedRoute>
+          }
+        />
 
+        
         {/* public routes */}
         <Route
           path="/login"
