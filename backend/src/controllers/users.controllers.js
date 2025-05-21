@@ -10,6 +10,12 @@ const getAllTechnicians = async (req, res) => {
       where: {
         role: userRole.TECHNICIAN,
       },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        technicianTickets: true,
+      },
     });
     res.status(200).json({
       success: true,
@@ -30,6 +36,12 @@ const getAllCoordinators = async (req, res) => {
     const coordinators = await db.user.findMany({
       where: {
         role: userRole.COORDINATOR,
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        coordinatorTickets: true,
       },
     });
     res.status(200).json({
@@ -133,6 +145,12 @@ const createUser = async (req, res) => {
       error: "Error creating a user",
     });
   }
-}
+};
 
-export { getAllTechnicians, getAllCoordinators, getUserById, updateUser, createUser };
+export {
+  getAllTechnicians,
+  getAllCoordinators,
+  getUserById,
+  updateUser,
+  createUser,
+};
