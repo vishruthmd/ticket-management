@@ -1073,6 +1073,7 @@ export namespace Prisma {
     name: string | null
     email: string | null
     password: string | null
+    department: $Enums.Department | null
     role: $Enums.userRole | null
     isVerified: boolean | null
     verificationToken: string | null
@@ -1088,6 +1089,7 @@ export namespace Prisma {
     name: string | null
     email: string | null
     password: string | null
+    department: $Enums.Department | null
     role: $Enums.userRole | null
     isVerified: boolean | null
     verificationToken: string | null
@@ -1103,6 +1105,7 @@ export namespace Prisma {
     name: number
     email: number
     password: number
+    department: number
     role: number
     isVerified: number
     verificationToken: number
@@ -1120,6 +1123,7 @@ export namespace Prisma {
     name?: true
     email?: true
     password?: true
+    department?: true
     role?: true
     isVerified?: true
     verificationToken?: true
@@ -1135,6 +1139,7 @@ export namespace Prisma {
     name?: true
     email?: true
     password?: true
+    department?: true
     role?: true
     isVerified?: true
     verificationToken?: true
@@ -1150,6 +1155,7 @@ export namespace Prisma {
     name?: true
     email?: true
     password?: true
+    department?: true
     role?: true
     isVerified?: true
     verificationToken?: true
@@ -1238,6 +1244,7 @@ export namespace Prisma {
     name: string
     email: string
     password: string
+    department: $Enums.Department | null
     role: $Enums.userRole
     isVerified: boolean
     verificationToken: string | null
@@ -1270,6 +1277,7 @@ export namespace Prisma {
     name?: boolean
     email?: boolean
     password?: boolean
+    department?: boolean
     role?: boolean
     isVerified?: boolean
     verificationToken?: boolean
@@ -1288,6 +1296,7 @@ export namespace Prisma {
     name?: boolean
     email?: boolean
     password?: boolean
+    department?: boolean
     role?: boolean
     isVerified?: boolean
     verificationToken?: boolean
@@ -1303,6 +1312,7 @@ export namespace Prisma {
     name?: boolean
     email?: boolean
     password?: boolean
+    department?: boolean
     role?: boolean
     isVerified?: boolean
     verificationToken?: boolean
@@ -1318,6 +1328,7 @@ export namespace Prisma {
     name?: boolean
     email?: boolean
     password?: boolean
+    department?: boolean
     role?: boolean
     isVerified?: boolean
     verificationToken?: boolean
@@ -1328,7 +1339,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "password" | "role" | "isVerified" | "verificationToken" | "passwordResetToken" | "passwordResetExpiry" | "image" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "password" | "department" | "role" | "isVerified" | "verificationToken" | "passwordResetToken" | "passwordResetExpiry" | "image" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     coordinatorTickets?: boolean | User$coordinatorTicketsArgs<ExtArgs>
     technicianTickets?: boolean | User$technicianTicketsArgs<ExtArgs>
@@ -1348,6 +1359,7 @@ export namespace Prisma {
       name: string
       email: string
       password: string
+      department: $Enums.Department | null
       role: $Enums.userRole
       isVerified: boolean
       verificationToken: string | null
@@ -1785,6 +1797,7 @@ export namespace Prisma {
     readonly name: FieldRef<"User", 'String'>
     readonly email: FieldRef<"User", 'String'>
     readonly password: FieldRef<"User", 'String'>
+    readonly department: FieldRef<"User", 'Department'>
     readonly role: FieldRef<"User", 'userRole'>
     readonly isVerified: FieldRef<"User", 'Boolean'>
     readonly verificationToken: FieldRef<"User", 'String'>
@@ -3468,6 +3481,7 @@ export namespace Prisma {
     name: 'name',
     email: 'email',
     password: 'password',
+    department: 'department',
     role: 'role',
     isVerified: 'isVerified',
     verificationToken: 'verificationToken',
@@ -3545,6 +3559,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'Department'
+   */
+  export type EnumDepartmentFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Department'>
+    
+
+
+  /**
+   * Reference to a field of type 'Department[]'
+   */
+  export type ListEnumDepartmentFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Department[]'>
+    
+
+
+  /**
    * Reference to a field of type 'userRole'
    */
   export type EnumuserRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'userRole'>
@@ -3576,20 +3604,6 @@ export namespace Prisma {
    * Reference to a field of type 'DateTime[]'
    */
   export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
-    
-
-
-  /**
-   * Reference to a field of type 'Department'
-   */
-  export type EnumDepartmentFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Department'>
-    
-
-
-  /**
-   * Reference to a field of type 'Department[]'
-   */
-  export type ListEnumDepartmentFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Department[]'>
     
 
 
@@ -3632,6 +3646,7 @@ export namespace Prisma {
     name?: StringFilter<"User"> | string
     email?: StringFilter<"User"> | string
     password?: StringFilter<"User"> | string
+    department?: EnumDepartmentNullableFilter<"User"> | $Enums.Department | null
     role?: EnumuserRoleFilter<"User"> | $Enums.userRole
     isVerified?: BoolFilter<"User"> | boolean
     verificationToken?: StringNullableFilter<"User"> | string | null
@@ -3649,6 +3664,7 @@ export namespace Prisma {
     name?: SortOrder
     email?: SortOrder
     password?: SortOrder
+    department?: SortOrderInput | SortOrder
     role?: SortOrder
     isVerified?: SortOrder
     verificationToken?: SortOrderInput | SortOrder
@@ -3669,6 +3685,7 @@ export namespace Prisma {
     NOT?: UserWhereInput | UserWhereInput[]
     name?: StringFilter<"User"> | string
     password?: StringFilter<"User"> | string
+    department?: EnumDepartmentNullableFilter<"User"> | $Enums.Department | null
     role?: EnumuserRoleFilter<"User"> | $Enums.userRole
     isVerified?: BoolFilter<"User"> | boolean
     verificationToken?: StringNullableFilter<"User"> | string | null
@@ -3686,6 +3703,7 @@ export namespace Prisma {
     name?: SortOrder
     email?: SortOrder
     password?: SortOrder
+    department?: SortOrderInput | SortOrder
     role?: SortOrder
     isVerified?: SortOrder
     verificationToken?: SortOrderInput | SortOrder
@@ -3707,6 +3725,7 @@ export namespace Prisma {
     name?: StringWithAggregatesFilter<"User"> | string
     email?: StringWithAggregatesFilter<"User"> | string
     password?: StringWithAggregatesFilter<"User"> | string
+    department?: EnumDepartmentNullableWithAggregatesFilter<"User"> | $Enums.Department | null
     role?: EnumuserRoleWithAggregatesFilter<"User"> | $Enums.userRole
     isVerified?: BoolWithAggregatesFilter<"User"> | boolean
     verificationToken?: StringNullableWithAggregatesFilter<"User"> | string | null
@@ -3825,6 +3844,7 @@ export namespace Prisma {
     name: string
     email: string
     password: string
+    department?: $Enums.Department | null
     role?: $Enums.userRole
     isVerified?: boolean
     verificationToken?: string | null
@@ -3842,6 +3862,7 @@ export namespace Prisma {
     name: string
     email: string
     password: string
+    department?: $Enums.Department | null
     role?: $Enums.userRole
     isVerified?: boolean
     verificationToken?: string | null
@@ -3859,6 +3880,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
+    department?: NullableEnumDepartmentFieldUpdateOperationsInput | $Enums.Department | null
     role?: EnumuserRoleFieldUpdateOperationsInput | $Enums.userRole
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     verificationToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -3876,6 +3898,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
+    department?: NullableEnumDepartmentFieldUpdateOperationsInput | $Enums.Department | null
     role?: EnumuserRoleFieldUpdateOperationsInput | $Enums.userRole
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     verificationToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -3893,6 +3916,7 @@ export namespace Prisma {
     name: string
     email: string
     password: string
+    department?: $Enums.Department | null
     role?: $Enums.userRole
     isVerified?: boolean
     verificationToken?: string | null
@@ -3908,6 +3932,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
+    department?: NullableEnumDepartmentFieldUpdateOperationsInput | $Enums.Department | null
     role?: EnumuserRoleFieldUpdateOperationsInput | $Enums.userRole
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     verificationToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -3923,6 +3948,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
+    department?: NullableEnumDepartmentFieldUpdateOperationsInput | $Enums.Department | null
     role?: EnumuserRoleFieldUpdateOperationsInput | $Enums.userRole
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     verificationToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -4065,6 +4091,13 @@ export namespace Prisma {
     not?: NestedStringFilter<$PrismaModel> | string
   }
 
+  export type EnumDepartmentNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.Department | EnumDepartmentFieldRefInput<$PrismaModel> | null
+    in?: $Enums.Department[] | ListEnumDepartmentFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.Department[] | ListEnumDepartmentFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumDepartmentNullableFilter<$PrismaModel> | $Enums.Department | null
+  }
+
   export type EnumuserRoleFilter<$PrismaModel = never> = {
     equals?: $Enums.userRole | EnumuserRoleFieldRefInput<$PrismaModel>
     in?: $Enums.userRole[] | ListEnumuserRoleFieldRefInput<$PrismaModel>
@@ -4134,6 +4167,7 @@ export namespace Prisma {
     name?: SortOrder
     email?: SortOrder
     password?: SortOrder
+    department?: SortOrder
     role?: SortOrder
     isVerified?: SortOrder
     verificationToken?: SortOrder
@@ -4149,6 +4183,7 @@ export namespace Prisma {
     name?: SortOrder
     email?: SortOrder
     password?: SortOrder
+    department?: SortOrder
     role?: SortOrder
     isVerified?: SortOrder
     verificationToken?: SortOrder
@@ -4164,6 +4199,7 @@ export namespace Prisma {
     name?: SortOrder
     email?: SortOrder
     password?: SortOrder
+    department?: SortOrder
     role?: SortOrder
     isVerified?: SortOrder
     verificationToken?: SortOrder
@@ -4190,6 +4226,16 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedStringFilter<$PrismaModel>
     _max?: NestedStringFilter<$PrismaModel>
+  }
+
+  export type EnumDepartmentNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.Department | EnumDepartmentFieldRefInput<$PrismaModel> | null
+    in?: $Enums.Department[] | ListEnumDepartmentFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.Department[] | ListEnumDepartmentFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumDepartmentNullableWithAggregatesFilter<$PrismaModel> | $Enums.Department | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumDepartmentNullableFilter<$PrismaModel>
+    _max?: NestedEnumDepartmentNullableFilter<$PrismaModel>
   }
 
   export type EnumuserRoleWithAggregatesFilter<$PrismaModel = never> = {
@@ -4383,6 +4429,10 @@ export namespace Prisma {
     set?: string
   }
 
+  export type NullableEnumDepartmentFieldUpdateOperationsInput = {
+    set?: $Enums.Department | null
+  }
+
   export type EnumuserRoleFieldUpdateOperationsInput = {
     set?: $Enums.userRole
   }
@@ -4511,6 +4561,13 @@ export namespace Prisma {
     not?: NestedStringFilter<$PrismaModel> | string
   }
 
+  export type NestedEnumDepartmentNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.Department | EnumDepartmentFieldRefInput<$PrismaModel> | null
+    in?: $Enums.Department[] | ListEnumDepartmentFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.Department[] | ListEnumDepartmentFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumDepartmentNullableFilter<$PrismaModel> | $Enums.Department | null
+  }
+
   export type NestedEnumuserRoleFilter<$PrismaModel = never> = {
     equals?: $Enums.userRole | EnumuserRoleFieldRefInput<$PrismaModel>
     in?: $Enums.userRole[] | ListEnumuserRoleFieldRefInput<$PrismaModel>
@@ -4587,6 +4644,27 @@ export namespace Prisma {
     not?: NestedIntFilter<$PrismaModel> | number
   }
 
+  export type NestedEnumDepartmentNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.Department | EnumDepartmentFieldRefInput<$PrismaModel> | null
+    in?: $Enums.Department[] | ListEnumDepartmentFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.Department[] | ListEnumDepartmentFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumDepartmentNullableWithAggregatesFilter<$PrismaModel> | $Enums.Department | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumDepartmentNullableFilter<$PrismaModel>
+    _max?: NestedEnumDepartmentNullableFilter<$PrismaModel>
+  }
+
+  export type NestedIntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
   export type NestedEnumuserRoleWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.userRole | EnumuserRoleFieldRefInput<$PrismaModel>
     in?: $Enums.userRole[] | ListEnumuserRoleFieldRefInput<$PrismaModel>
@@ -4620,17 +4698,6 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedStringNullableFilter<$PrismaModel>
     _max?: NestedStringNullableFilter<$PrismaModel>
-  }
-
-  export type NestedIntNullableFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
   export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -4836,6 +4903,7 @@ export namespace Prisma {
     name: string
     email: string
     password: string
+    department?: $Enums.Department | null
     role?: $Enums.userRole
     isVerified?: boolean
     verificationToken?: string | null
@@ -4852,6 +4920,7 @@ export namespace Prisma {
     name: string
     email: string
     password: string
+    department?: $Enums.Department | null
     role?: $Enums.userRole
     isVerified?: boolean
     verificationToken?: string | null
@@ -4873,6 +4942,7 @@ export namespace Prisma {
     name: string
     email: string
     password: string
+    department?: $Enums.Department | null
     role?: $Enums.userRole
     isVerified?: boolean
     verificationToken?: string | null
@@ -4889,6 +4959,7 @@ export namespace Prisma {
     name: string
     email: string
     password: string
+    department?: $Enums.Department | null
     role?: $Enums.userRole
     isVerified?: boolean
     verificationToken?: string | null
@@ -4921,6 +4992,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
+    department?: NullableEnumDepartmentFieldUpdateOperationsInput | $Enums.Department | null
     role?: EnumuserRoleFieldUpdateOperationsInput | $Enums.userRole
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     verificationToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -4937,6 +5009,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
+    department?: NullableEnumDepartmentFieldUpdateOperationsInput | $Enums.Department | null
     role?: EnumuserRoleFieldUpdateOperationsInput | $Enums.userRole
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     verificationToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -4964,6 +5037,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
+    department?: NullableEnumDepartmentFieldUpdateOperationsInput | $Enums.Department | null
     role?: EnumuserRoleFieldUpdateOperationsInput | $Enums.userRole
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     verificationToken?: NullableStringFieldUpdateOperationsInput | string | null
@@ -4980,6 +5054,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
+    department?: NullableEnumDepartmentFieldUpdateOperationsInput | $Enums.Department | null
     role?: EnumuserRoleFieldUpdateOperationsInput | $Enums.userRole
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     verificationToken?: NullableStringFieldUpdateOperationsInput | string | null

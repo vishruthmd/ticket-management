@@ -52,6 +52,7 @@ model User {
   name                String
   email               String    @unique
   password            String
+  department          Department?   
   role                userRole  @default(TECHNICIAN)
   isVerified          Boolean   @default(false)
   verificationToken   String?

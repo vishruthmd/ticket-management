@@ -48,18 +48,19 @@ enum TicketStatus {
 }
 
 model User {
-  id                  String    @id @default(cuid())
+  id                  String      @id @default(cuid())
   name                String
-  email               String    @unique
+  email               String      @unique
   password            String
-  role                userRole  @default(TECHNICIAN)
-  isVerified          Boolean   @default(false)
+  department          Department?
+  role                userRole    @default(TECHNICIAN)
+  isVerified          Boolean     @default(false)
   verificationToken   String?
   passwordResetToken  String?
   passwordResetExpiry DateTime?
   image               String?
-  createdAt           DateTime  @default(now())
-  updatedAt           DateTime  @updatedAt
+  createdAt           DateTime    @default(now())
+  updatedAt           DateTime    @updatedAt
 
   // relations
   coordinatorTickets Ticket[] @relation("CoordinatorTickets")

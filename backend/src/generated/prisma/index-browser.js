@@ -122,6 +122,7 @@ exports.Prisma.UserScalarFieldEnum = {
   name: 'name',
   email: 'email',
   password: 'password',
+  department: 'department',
   role: 'role',
   isVerified: 'isVerified',
   verificationToken: 'verificationToken',
@@ -163,12 +164,6 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
-exports.userRole = exports.$Enums.userRole = {
-  TECHNICIAN: 'TECHNICIAN',
-  ADMIN: 'ADMIN',
-  COORDINATOR: 'COORDINATOR'
-};
-
 exports.Department = exports.$Enums.Department = {
   ISE: 'ISE',
   CSE: 'CSE',
@@ -188,6 +183,12 @@ exports.Department = exports.$Enums.Department = {
   PHY: 'PHY',
   CHEM: 'CHEM',
   MATH: 'MATH'
+};
+
+exports.userRole = exports.$Enums.userRole = {
+  TECHNICIAN: 'TECHNICIAN',
+  ADMIN: 'ADMIN',
+  COORDINATOR: 'COORDINATOR'
 };
 
 exports.TicketStatus = exports.$Enums.TicketStatus = {
