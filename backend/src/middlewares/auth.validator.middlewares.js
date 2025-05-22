@@ -2,6 +2,7 @@ import {
   registerSchema,
   loginSchema,
   updateProfileSchema,
+  createUserSchema,
 } from "../libs/auth.validator.libs.js";
 
 const validateRegisterInputs = (req, res, next) => {
@@ -15,6 +16,18 @@ const validateRegisterInputs = (req, res, next) => {
     });
   }
 };
+
+const validateCreateTicketInputs = (req, res, next) => {
+  const result = createUserSchema.safeParse(req.body);
+  if (result.success) {
+    next();
+  } else {
+    res.status(400).json({
+      success: false,
+      error: result.error.issues,
+    });
+  }
+}
 
 const validateLoginInputs = (req, res, next) => {
   const result = loginSchema.safeParse(req.body);
@@ -44,4 +57,5 @@ export {
   validateRegisterInputs,
   validateLoginInputs,
   validateUpdateProfileInputs,
+  validateCreateTicketInputs
 };

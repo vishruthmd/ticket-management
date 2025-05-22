@@ -6,14 +6,26 @@ import { Link } from "react-router-dom";
 import { Code, Eye, EyeOff, Loader2, Lock, Mail } from "lucide-react";
 import { useAuthStore } from "../store/useAuthStore.js";
 import NavbarAdmin from "../components/NavbarAdmin.jsx";
+import { DEPARTMENTS } from "../../../backend/src/libs/constants.js";
 
 // ✅ Zod schema
-const SignUpSchema = z.object({
-  email: z.string().email("Enter a valid email"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
-  name: z.string().min(3, "Name must be at least 3 characters"),
-  role: z.enum(["TECHNICIAN", "ADMIN", "COORDINATOR"]),
-});
+const SignUpSchema = z
+  .object({
+    email: z.string().email("Enter a valid email"),
+    password: z.string().min(6, "Password must be at least 6 characters"),
+    name: z.string().min(3, "Name must be at least 3 characters"),
+    role: z.enum(["TECHNICIAN", "ADMIN", "COORDINATOR"]),
+    department: z.string().optional(), // initially optional
+  })
+  .superRefine((data, ctx) => {
+    if (data.role === "COORDINATOR" && !data.department) {
+      ctx.addIssue({
+        path: ["department"],
+        code: z.ZodIssueCode.custom,
+        message: "Department is required for coordinators",
+      });
+    }
+  });
 
 const CreateUserPage = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -23,9 +35,11 @@ const CreateUserPage = () => {
     register,
     handleSubmit,
     formState: { errors },
+    watch,
   } = useForm({
     resolver: zodResolver(SignUpSchema),
   });
+  const selectedRole = watch("role");
 
   const onSubmit = async (data) => {
     try {
@@ -105,6 +119,57 @@ const CreateUserPage = () => {
                 </p>
               )}
             </div>
+
+            {selectedRole === "COORDINATOR" && (
+  <div className="form-control">
+    <label className="label">
+      <span className="label-text font-medium">Department</span>
+    </label>
+    <div className="relative">
+      <select
+        {...register("department")}
+        className={`input input-bordered w-full ${
+          errors.department ? "input-error" : ""
+        }`}
+        defaultValue=""
+      >
+        <option value="" disabled>
+          Select Department
+        </option>
+        {[
+          { code: "CSE", name: "Computer Science and Engineering" },
+          { code: "ISE", name: "Information Science and Engineering" },
+          { code: "AIML", name: "Artificial Intelligence and Machine Learning" },
+          { code: "BT", name: "Biotechnology" },
+          { code: "CV", name: "Civil" },
+          { code: "ME", name: "Mechanical Engineering" },
+          { code: "ETE", name: "Electronics and Telecommunication Engineering" },
+          { code: "EIE", name: "Electronics and Instrumentation Engineering" },
+          { code: "ECE", name: "Electronics and Communication Engineering" },
+          { code: "ASE", name: "Aerospace Engineering" },
+          { code: "IDRC", name: "IDRC" },
+          { code: "LIB", name: "Library" },
+          { code: "CMT", name: "Central Maintenance" },
+          { code: "MCA", name: "Masters of Computer Applications" },
+          { code: "ADMIN_BLOCK", name: "Admin Block" },
+          { code: "CHEM", name: "Chemical Engineering" },
+          { code: "PHY", name: "Physics Department" },
+          { code: "MATH", name: "Mathematics Department" },
+        ].map((dept) => (
+          <option key={dept.code} value={dept.code}>
+            {dept.code} - {dept.name}
+          </option>
+        ))}
+      </select>
+    </div>
+    {errors.department && (
+      <p className="text-red-500 text-sm mt-1">
+        {errors.department.message}
+      </p>
+    )}
+  </div>
+)}
+
 
             {/* Email */}
             <div className="form-control">

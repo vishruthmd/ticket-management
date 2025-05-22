@@ -19,6 +19,8 @@ const DEPARTMENTS = [
   "MATH",
 ];
 
+const ROLES = ["TECHNICIAN", "ADMIN", "COORDINATOR"];
+
 const STATUSES = ["OPEN", "IN_PROGRESS", "CLOSED"];
 
-export { DEPARTMENTS, STATUSES };
+export { DEPARTMENTS, STATUSES, ROLES };

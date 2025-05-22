@@ -2,7 +2,7 @@ import express from "express";
 import {
   getAllTechnicians,
   getAllCoordinators,
-  createUser
+  createUser,
 } from "../controllers/users.controllers.js";
 import {
   isLoggedIn,
@@ -13,18 +13,19 @@ import {
   createTicketLimiter,
   updateTicketLimiter,
 } from "../middlewares/rate-limit.middlewares.js";
-import {
-  validateRegisterInputs,
-  validateLoginInputs,
-  validateUpdateProfileInputs,
-} from "../middlewares/auth.validator.middlewares.js";
-
+import { validateCreateTicketInputs } from "../middlewares/auth.validator.middlewares.js";
 
 const userRoutes = express.Router();
 
 userRoutes.get("/all-technicians", isLoggedIn, getAllTechnicians);
 userRoutes.get("/all-coordinators", isLoggedIn, getAllCoordinators);
-userRoutes.post("/create-user", createTicketLimiter, isLoggedIn, isAdmin, validateRegisterInputs, createUser);
-
+userRoutes.post(
+  "/create-user",
+  createTicketLimiter,
+  isLoggedIn,
+  isAdmin,
+  validateCreateTicketInputs,
+  createUser
+);
 
 export default userRoutes;

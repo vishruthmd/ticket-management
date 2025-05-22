@@ -41,6 +41,7 @@ const getAllCoordinators = async (req, res) => {
         id: true,
         name: true,
         email: true,
+        department: true,
         coordinatorTickets: true,
       },
     });
@@ -98,7 +99,7 @@ const updateUser = async (req, res) => {
 };
 
 const createUser = async (req, res) => {
-  const { email, password, name, role } = req.body;
+  const { email, password, name, role, department } = req.body;
 
   try {
     // check existing
@@ -109,6 +110,7 @@ const createUser = async (req, res) => {
     });
 
     if (existingUser) {
+      console.error("user already exists");
       return res.status(409).json({
         success: false,
         error: "user already exists",
@@ -124,6 +126,7 @@ const createUser = async (req, res) => {
         password: hashedPassword,
         name,
         role: role.toUpperCase(),
+        department,
       },
     });
 
@@ -135,6 +138,7 @@ const createUser = async (req, res) => {
         email: newUser.email,
         name: newUser.name,
         role: newUser.role,
+        department: newUser.department,
         image: newUser.image,
       },
     });
