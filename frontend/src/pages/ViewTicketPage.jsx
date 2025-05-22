@@ -1,19 +1,21 @@
+// All imports remain same
 import React, { useEffect, useState } from "react";
 import { axiosInstance } from "../libs/axios.libs.js";
 import NavbarCoordinator from "../components/NavbarCoordinator.jsx";
+import { CheckCircle } from "lucide-react";
 
 const ViewTicketPage = () => {
   const [tickets, setTickets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [fetchError, setFetchError] = useState(null);
   const [selectedTicket, setSelectedTicket] = useState(null);
+  const [ticketToClose, setTicketToClose] = useState(null); // NEW
+  const [updatingTicketId, setUpdatingTicketId] = useState(null);
 
   useEffect(() => {
     const fetchTickets = async () => {
       try {
-        const response = await axiosInstance.get(
-          "/tickets/coordinator-tickets"
-        );
+        const response = await axiosInstance.get("/tickets/coordinator-tickets");
         setTickets(response.data.tickets || []);
       } catch (error) {
         console.error("Error fetching tickets:", error);
@@ -25,6 +27,28 @@ const ViewTicketPage = () => {
 
     fetchTickets();
   }, []);
+
+  const confirmMarkAsClosed = async () => {
+    if (!ticketToClose) return;
+
+    try {
+      setUpdatingTicketId(ticketToClose.id);
+      const response = await axiosInstance.put(`/tickets/set-to-closed/${ticketToClose.id}`);
+      const updatedTicket = response.data.ticket;
+
+      setTickets((prevTickets) =>
+        prevTickets.map((ticket) =>
+          ticket.id === updatedTicket.id ? updatedTicket : ticket
+        )
+      );
+    } catch (error) {
+      console.error("Error updating ticket status:", error);
+      alert("Failed to mark ticket as closed.");
+    } finally {
+      setUpdatingTicketId(null);
+      setTicketToClose(null); // close modal
+    }
+  };
 
   return (
     <div className="min-h-screen w-full bg-base-200 text-base-content">
@@ -46,16 +70,14 @@ const ViewTicketPage = () => {
                 <span>{fetchError}</span>
               </div>
             ) : tickets.length === 0 ? (
-              <div className="text-center py-8 text-gray-500">
-                No tickets found.
-              </div>
+              <div className="text-center py-8 text-gray-500">No tickets found.</div>
             ) : (
               <div className="overflow-x-auto w-full">
                 <table className="table w-full table-zebra text-sm">
                   <thead>
                     <tr>
                       <th>Title</th>
-                      <th>Description</th>
+                      
                       <th>Department</th>
                       <th>Location</th>
                       <th>Device ID</th>
@@ -69,9 +91,7 @@ const ViewTicketPage = () => {
                     {tickets.map((ticket) => (
                       <tr key={ticket.id}>
                         <td>{ticket.title}</td>
-                        <td className="max-w-xs truncate">
-                          {ticket.description}
-                        </td>
+                        
                         <td>{ticket.department}</td>
                         <td>{ticket.location}</td>
                         <td>{ticket.deviceId}</td>
@@ -94,13 +114,25 @@ const ViewTicketPage = () => {
                             ? new Date(ticket.resolvedAt).toLocaleString()
                             : "—"}
                         </td>
-                        <td>
+                        <td className="flex flex-col gap-2">
                           <button
                             onClick={() => setSelectedTicket(ticket)}
-                            className="btn btn-sm btn-outline btn-primary hover:scale-105 transition-transform"
+                            className="btn btn-sm btn-outline btn-primary"
                           >
                             View
                           </button>
+                          {ticket.status === "IN_PROGRESS" && (
+                            <button
+                              onClick={() => setTicketToClose(ticket)}
+                              className="btn btn-sm btn-outline btn-success"
+                              disabled={updatingTicketId === ticket.id}
+                            >
+                              <CheckCircle className="w-4 h-4 mr-1" />
+                              {updatingTicketId === ticket.id
+                                ? "Closing..."
+                                : "Mark Closed"}
+                            </button>
+                          )}
                         </td>
                       </tr>
                     ))}
@@ -112,7 +144,7 @@ const ViewTicketPage = () => {
         </div>
       </div>
 
-      {/* Dark Mode Ticket Detail Modal */}
+      {/* Ticket Details Modal */}
       {selectedTicket && (
         <div className="fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center z-50">
           <div className="bg-gray-900 text-gray-200 w-full max-w-md max-h-[85vh] overflow-y-auto rounded-lg shadow-lg p-6 relative hover:shadow-2xl transition-shadow duration-300">
@@ -127,7 +159,6 @@ const ViewTicketPage = () => {
               ✕
             </button>
 
-            {/* Description on top */}
             <div className="mb-4">
               <h3 className="text-sm font-medium text-gray-400">Description</h3>
               <p className="mt-1 p-2 bg-gray-800 rounded text-gray-100 max-h-40 overflow-y-auto text-sm whitespace-pre-line">
@@ -135,7 +166,6 @@ const ViewTicketPage = () => {
               </p>
             </div>
 
-            {/* Other fields */}
             <div className="space-y-3 text-sm">
               {[
                 "title",
@@ -175,9 +205,40 @@ const ViewTicketPage = () => {
             <div className="mt-4 text-right">
               <button
                 onClick={() => setSelectedTicket(null)}
-                className="btn btn-sm btn-primary hover:brightness-110 transition-transform hover:scale-105"
+                className="btn btn-sm btn-primary"
               >
                 Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Confirm Close Modal */}
+      {ticketToClose && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 backdrop-blur-sm">
+          <div className="bg-base-100 rounded-lg shadow-lg p-6 max-w-md w-full">
+            <h3 className="text-lg font-semibold mb-4 text-success">
+              Confirm Close
+            </h3>
+            <p className="mb-6 text-sm text-gray-500">
+              Are you sure you want to mark this ticket as <b>CLOSED</b>?
+            </p>
+            <div className="flex justify-end gap-3">
+              <button
+                className="btn btn-sm btn-ghost"
+                onClick={() => setTicketToClose(null)}
+              >
+                Cancel
+              </button>
+              <button
+                className="btn btn-sm btn-success"
+                onClick={confirmMarkAsClosed}
+                disabled={updatingTicketId === ticketToClose.id}
+              >
+                {updatingTicketId === ticketToClose.id
+                  ? "Closing..."
+                  : "Confirm"}
               </button>
             </div>
           </div>

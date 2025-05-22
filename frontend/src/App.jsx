@@ -19,6 +19,8 @@ import ViewCoordinatorsPage from "./pages/ViewCoordinatorsPage";
 import ViewTicketsTechnician from "./pages/ViewTicketsTechnician";
 import LayoutTechnician from "./layout/LayoutTechnician";
 import CreateUserPage from "./pages/CreateUserPage";
+import ViewDepartmentTickets from "./pages/ViewDepartmentTickets";
+
 
 const App = () => {
   const { authUser, isCheckingAuth, checkAuth } = useAuthStore();
@@ -123,6 +125,14 @@ const App = () => {
           element={
             <ProtectedRoute allowedRoles={["ADMIN"]}>
               <ViewCoordinatorsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/view-department-tickets"
+          element={
+            <ProtectedRoute allowedRoles={["ADMIN"]}>
+              <ViewDepartmentTickets />
             </ProtectedRoute>
           }
         />

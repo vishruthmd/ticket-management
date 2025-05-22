@@ -51,13 +51,12 @@ const NavbarAdmin = () => {
               <Users className="w-4 h-4" />
               <span className="hidden md:inline">View Coordinators</span>
             </Link>
-
             <Link
-              to="/view-tickets-admin"
-              className="btn btn-sm rounded-full btn-ghost hover:bg-primary hover:text-white flex gap-2"
-            >
-              <List className="w-4 h-4" />
-              <span className="hidden md:inline">View Tickets</span>
+                to="/view-department-tickets"
+                className="btn btn-sm rounded-full btn-ghost hover:bg-primary hover:text-white flex gap-2"
+              >
+                <List className="w-4 h-4" />
+                <span className="hidden md:inline">Dept Tickets</span>
             </Link>
 
             {/* Profile Dropdown */}

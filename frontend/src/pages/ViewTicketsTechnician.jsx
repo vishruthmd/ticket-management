@@ -27,26 +27,7 @@ const ViewTicketsTechnician = () => {
     fetchTickets();
   }, []);
 
-  const markAsClosed = async (id) => {
-    try {
-      setUpdatingTicketId(id);
-      const response = await axiosInstance.put(`/tickets/set-to-closed/${id}`);
-      const updatedTicket = response.data.ticket;
-
-      setTickets((prevTickets) =>
-        prevTickets.map((ticket) =>
-          ticket.id === updatedTicket.id ? updatedTicket : ticket
-        )
-      );
-      setTicketToClose(null);
-    } catch (error) {
-      console.error("Error updating ticket status:", error);
-      alert("Failed to mark ticket as closed.");
-    } finally {
-      setUpdatingTicketId(null);
-    }
-  };
-
+  
   return (
     <div className="min-h-screen w-full">
       <div className="max-w-screen-2xl mx-auto px-4 py-8">
@@ -116,7 +97,7 @@ const ViewTicketsTechnician = () => {
                           >
                             <Eye className="w-4 h-4 mr-1" /> View
                           </button>
-                          {ticket.status === "IN_PROGRESS" && (
+                          {/* {ticket.status === "IN_PROGRESS" && (
                             <button
                               onClick={() => setTicketToClose(ticket)}
                               className="btn btn-sm btn-outline btn-success"
@@ -127,7 +108,7 @@ const ViewTicketsTechnician = () => {
                                 ? "Closing..."
                                 : "Mark Closed"}
                             </button>
-                          )}
+                          )} */}
                         </td>
                       </tr>
                     ))}
@@ -201,33 +182,7 @@ const ViewTicketsTechnician = () => {
       )}
 
       {/* Confirm Close Modal */}
-      {ticketToClose && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 shadow-lg max-w-sm w-full">
-            <h3 className="text-lg font-bold text-gray-800 mb-4">
-              Confirm Close
-            </h3>
-            <p className="text-sm text-gray-600 mb-6">
-              Are you sure you want to mark this ticket as{" "}
-              <strong>CLOSED</strong>?
-            </p>
-            <div className="flex justify-end gap-2">
-              <button
-                onClick={() => setTicketToClose(null)}
-                className="btn btn-sm border border-gray-300 text-gray-700 bg-gray-100 hover:bg-gray-300"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={() => markAsClosed(ticketToClose.id)}
-                className="btn btn-sm btn-success"
-              >
-                Yes, Mark Closed
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      
     </div>
   );
 };
