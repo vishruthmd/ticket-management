@@ -33,13 +33,7 @@ import { STATUSES } from "../libs/constants.js";
 // }
 
 const createTicket = async (req, res) => {
-  const {
-    title,
-    department,
-    deviceId,
-    location,
-    description,
-  } = req.body;
+  const { title, department, deviceId, location, description } = req.body;
 
   try {
     const newTicket = await db.ticket.create({
@@ -76,8 +70,20 @@ const getAllTickets = async (req, res) => {
   try {
     const tickets = await db.ticket.findMany({
       include: {
-        coordinator: true,
-        technician: true,
+        coordinator: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+        technician: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
       },
     });
 
@@ -101,7 +107,13 @@ const getAllOpenTickets = async (req, res, next) => {
         status: "OPEN",
       },
       include: {
-        coordinator: true,
+        coordinator: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
       },
     });
     if (!tickets) {
@@ -130,8 +142,20 @@ const getAllInProgressTickets = async (req, res) => {
         status: "IN_PROGRESS",
       },
       include: {
-        coordinator: true,
-        technician: true,
+        coordinator: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+        technician: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
       },
     });
     if (!tickets) {
@@ -160,8 +184,20 @@ const getAllClosedTickets = async (req, res) => {
         status: "CLOSED",
       },
       include: {
-        coordinator: true,
-        technician: true,
+        coordinator: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+        technician: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
       },
     });
     if (!tickets) {
@@ -304,6 +340,7 @@ const setStatusToClosed = async (req, res) => {
       where: { id },
       data: {
         status: "CLOSED",
+        resolvedAt: new Date(),
       },
     });
 
@@ -313,10 +350,7 @@ const setStatusToClosed = async (req, res) => {
       ticket: updatedTicket,
     });
   } catch (error) {
-    console.error(
-      "Error updating ticket status in setStatusToClosed:",
-      error
-    );
+    console.error("Error updating ticket status in setStatusToClosed:", error);
     res.status(500).json({
       success: false,
       message: "Failed to update ticket status",
@@ -324,7 +358,7 @@ const setStatusToClosed = async (req, res) => {
   }
 };
 
-const getAllCoordinatorTickets = async(req, res) => {
+const getAllCoordinatorTickets = async (req, res) => {
   try {
     const id = req.user.id;
     const tickets = await db.ticket.findMany({
@@ -344,7 +378,6 @@ const getAllCoordinatorTickets = async(req, res) => {
         },
       },
     });
-    
 
     res.status(200).json({
       success: true,
@@ -355,9 +388,9 @@ const getAllCoordinatorTickets = async(req, res) => {
     res.status(500).json({
       success: false,
       message: "Failed to fetch coordinator tickets",
-    })
+    });
   }
-}
+};
 
 const updateTicket = async (req, res) => {
   try {
@@ -382,11 +415,53 @@ const updateTicket = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Failed to update ticket",
-    })
+    });
   }
-}
+};
 
+const getAllTicketsDepartmentWise = async (req, res) => {
+  try {
+    const tickets = await db.ticket.findMany({
+      include: {
+        coordinator: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+        technician: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+      },
+    });
 
+    // Group tickets by department
+    const ticketsByDepartment = tickets.reduce((acc, ticket) => {
+      const dept = ticket.department;
+      if (!acc[dept]) {
+        acc[dept] = [];
+      }
+      acc[dept].push(ticket);
+      return acc;
+    }, {});
+
+    res.status(200).json({
+      success: true,
+      ticketsByDepartment,
+    });
+  } catch (error) {
+    console.error("Error fetching tickets:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch tickets",
+    });
+  }
+};
 
 export {
   createTicket,
@@ -399,5 +474,6 @@ export {
   getAllCoordinatorTickets,
   setStatusToInProgress,
   setStatusToClosed,
-  updateTicket
+  updateTicket,
+  getAllTicketsDepartmentWise,
 };

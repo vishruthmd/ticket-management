@@ -94,5 +94,26 @@ const isAdminOrCoordinator = async (req, res, next) => {
   }
 };
 
+const isCoordinator = async (req, res, next) => {
+  try {
+    const userId = req.user.id;
+    const userRole = req.user.role.toUpperCase();
 
-export { isLoggedIn, isAdmin, isAdminOrCoordinator };
+    if (userRole !== "COORDINATOR") {
+      return res.status(403).json({
+        success: false,
+        error: "Access denied, admins or coordinators only",
+      });
+    }
+    next();
+  } catch (error) {
+    console.error("Error checking admin or coordinator role", error);
+    res.status(500).json({
+      success: false,
+      message: "Error checking admin or coordinator role",
+    });
+  }
+}
+
+
+export { isLoggedIn, isAdmin, isAdminOrCoordinator, isCoordinator };

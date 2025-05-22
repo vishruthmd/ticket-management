@@ -12,11 +12,13 @@ import {
   setStatusToInProgress,
   setStatusToClosed,
   updateTicket,
+  getAllTicketsDepartmentWise,
 } from "../controllers/ticket.controllers.js";
 import {
   isLoggedIn,
   isAdmin,
   isAdminOrCoordinator,
+  isCoordinator,
 } from "../middlewares/auth.middlewares.js";
 import {
   validateCreateTicketInputs,
@@ -34,13 +36,15 @@ ticketRoutes.post(
   "/create",
   createTicketLimiter,
   isLoggedIn,
-  isAdminOrCoordinator,
+  isCoordinator,
   validateCreateTicketInputs,
   createTicket
 );
 ticketRoutes.post(
   "/update-ticket/:id",
   updateTicketLimiter,
+  isLoggedIn,
+  isCoordinator,
   validateUpdateTicketInputs,
   updateTicket
 );
@@ -52,7 +56,14 @@ ticketRoutes.get("/in-progress-tickets", isLoggedIn, getAllInProgressTickets);
 ticketRoutes.get("/closed-tickets", isLoggedIn, getAllClosedTickets);
 ticketRoutes.get("/technician-tickets", isLoggedIn, getAllTechnicianTickets);
 ticketRoutes.get("/coordinator-tickets", isLoggedIn, getAllCoordinatorTickets);
-ticketRoutes.put("/set-to-in-progress/:id/:technicianId", isLoggedIn, isAdmin, isOpen, setStatusToInProgress);
-ticketRoutes.put("/set-to-closed/:id",  isInProgress, setStatusToClosed);
+ticketRoutes.put(
+  "/set-to-in-progress/:id/:technicianId",
+  isLoggedIn,
+  isAdmin,
+  isOpen,
+  setStatusToInProgress
+);
+ticketRoutes.put("/set-to-closed/:id", isInProgress, setStatusToClosed);
+ticketRoutes.get("/get-all-tickets-department-wise", isLoggedIn, getAllTicketsDepartmentWise);
 
 export default ticketRoutes;

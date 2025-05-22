@@ -7,6 +7,7 @@ export const useAuthStore = create((set) => ({
   isRegistering: false,
   isLoggingIn: false,
   isCheckingAuth: false,
+  isCreatingUser: false,
 
   checkAuth: async () => {
     set({ isCheckingAuth: true });
@@ -60,4 +61,17 @@ export const useAuthStore = create((set) => ({
       toast.error("Logout failed");
     }
   },
+  createUser: async (data) => {
+    set({ isCreatingUser: true });
+
+    try {
+      const res = await axiosInstance.post("/users/create-user", data);
+      toast.success(res.data.message);
+    } catch (error) {
+      console.log("error signing up", error);
+      toast.error("error signing up");
+    } finally {
+      set({ isCreatingUser: false });
+    }
+  }
 }));
