@@ -62,19 +62,28 @@ const ViewTechniciansPage = () => {
       header: "Total Tickets",
       field: "totalTickets",
       sortable: true,
-      render: (row) => row.technicianTickets.length,
+      render: (row) => (
+        <div className="text-center w-full">{row.technicianTickets.length}</div>
+      ),
+      cellClass: 'text-center',
     },
     {
       header: "In Progress",
       field: "inProgressCount",
       sortable: true,
-      render: (row) => row.technicianTickets.filter((t) => t.status === "IN_PROGRESS").length,
+      render: (row) => (
+        <div className="text-center w-full">{row.technicianTickets.filter((t) => t.status === "IN_PROGRESS").length}</div>
+      ),
+      cellClass: 'text-center',
     },
     {
       header: "Closed",
       field: "closedCount",
       sortable: true,
-      render: (row) => row.technicianTickets.filter((t) => t.status === "CLOSED").length,
+      render: (row) => (
+        <div className="text-center w-full">{row.technicianTickets.filter((t) => t.status === "CLOSED").length}</div>
+      ),
+      cellClass: 'text-center',
     },
     {
       header: "Actions",
@@ -91,6 +100,7 @@ const ViewTechniciansPage = () => {
           View
         </Button>
       ),
+      cellClass: 'text-center',
     },
   ];
 
@@ -106,7 +116,7 @@ const ViewTechniciansPage = () => {
         ) : fetchError ? (
           <div className="text-center py-8 text-red-500">{fetchError}</div>
         ) : (
-          <DataTable columns={columns} data={technicians} />
+          <DataTable columns={columns} data={technicians} rowClassName="motion-row" />
         )}
       </Card>
       <AnimatePresence>

@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { FaSort, FaSortUp, FaSortDown, FaSearch } from 'react-icons/fa';
+import { motion } from 'framer-motion';
 
-const DataTable = ({ columns, data, searchable = true, pagination = true }) => {
+const DataTable = ({ columns, data, searchable = true, pagination = true, rowClassName = '' }) => {
   const [sortField, setSortField] = useState(null);
   const [sortDirection, setSortDirection] = useState('asc');
   const [searchTerm, setSearchTerm] = useState('');
@@ -65,7 +66,7 @@ const DataTable = ({ columns, data, searchable = true, pagination = true }) => {
         </div>
       )}
 
-      <div className="overflow-x-auto shadow rounded-lg">
+      <div className="overflow-x-auto shadow rounded-lg px-6">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
@@ -83,16 +84,25 @@ const DataTable = ({ columns, data, searchable = true, pagination = true }) => {
               ))}
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody className="bg-white divide-y divide-gray-200 overflow-visible">
             {paginatedData.length > 0 ? (
               paginatedData.map((row, index) => (
-                <tr key={index} className="hover:bg-gray-50">
+                <motion.tr
+                  key={index}
+                  className={`transition-all duration-200 cursor-pointer hover:scale-[1.025] hover:shadow-lg hover:bg-blue-50 rounded-full border border-transparent hover:border-blue-200 overflow-visible ${rowClassName}`}
+                  whileHover={{ scale: 1.001, zIndex: 10 }}
+                  initial={{ zIndex: 1 }}
+                  style={{ borderRadius: 9999 }}
+                >
                   {columns.map((column) => (
-                    <td key={column.field} className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                    <td
+                      key={column.field}
+                      className={`px-6 py-4 whitespace-nowrap text-sm text-gray-700 ${column.cellClass || ''}`}
+                    >
                       {column.render ? column.render(row) : row[column.field]}
                     </td>
                   ))}
-                </tr>
+                </motion.tr>
               ))
             ) : (
               <tr>

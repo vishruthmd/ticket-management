@@ -3,7 +3,7 @@ import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import logo from '../assets/logo.png';
+import logo from '../assets/rvce.png';
 
 export default function AdminHeader({ children }) {
   return (
