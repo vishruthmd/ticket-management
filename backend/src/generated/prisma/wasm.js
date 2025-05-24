@@ -138,6 +138,7 @@ exports.Prisma.TicketScalarFieldEnum = {
   title: 'title',
   description: 'description',
   department: 'department',
+  priority: 'priority',
   location: 'location',
   deviceId: 'deviceId',
   status: 'status',
@@ -189,6 +190,12 @@ exports.userRole = exports.$Enums.userRole = {
   TECHNICIAN: 'TECHNICIAN',
   ADMIN: 'ADMIN',
   COORDINATOR: 'COORDINATOR'
+};
+
+exports.Priority = exports.$Enums.Priority = {
+  LOW: 'LOW',
+  MEDIUM: 'MEDIUM',
+  HIGH: 'HIGH'
 };
 
 exports.TicketStatus = exports.$Enums.TicketStatus = {

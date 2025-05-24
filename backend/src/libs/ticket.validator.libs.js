@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { DEPARTMENTS, STATUSES } from "./constants.js";
+import { DEPARTMENTS, STATUSES, PRIORITIES } from "./constants.js";
 
 const createTicketSchema = z.object({
   title: z
