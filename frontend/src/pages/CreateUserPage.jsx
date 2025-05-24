@@ -6,7 +6,12 @@ import { Link } from "react-router-dom";
 import { Code, Eye, EyeOff, Loader2, Lock, Mail } from "lucide-react";
 import { useAuthStore } from "../store/useAuthStore.js";
 import NavbarAdmin from "../components/NavbarAdmin.jsx";
-import { DEPARTMENTS } from "../../../backend/src/libs/constants.js";
+import {
+  DEPARTMENTS,
+  departmentOptions,
+} from "../../../backend/src/libs/constants.js";
+import { Combobox } from "@headlessui/react"
+import { Check, ChevronDown } from "lucide-react";
 
 // ✅ Zod schema
 const SignUpSchema = z
@@ -36,10 +41,12 @@ const CreateUserPage = () => {
     handleSubmit,
     formState: { errors },
     watch,
+    setValue,
   } = useForm({
     resolver: zodResolver(SignUpSchema),
   });
   const selectedRole = watch("role");
+  const [query, setQuery] = useState("");
 
   const onSubmit = async (data) => {
     try {
@@ -121,55 +128,76 @@ const CreateUserPage = () => {
             </div>
 
             {selectedRole === "COORDINATOR" && (
-  <div className="form-control">
-    <label className="label">
-      <span className="label-text font-medium">Department</span>
-    </label>
-    <div className="relative">
-      <select
-        {...register("department")}
-        className={`input input-bordered w-full ${
-          errors.department ? "input-error" : ""
-        }`}
-        defaultValue=""
-      >
-        <option value="" disabled>
-          Select Department
-        </option>
-        {[
-          { code: "CSE", name: "Computer Science and Engineering" },
-          { code: "ISE", name: "Information Science and Engineering" },
-          { code: "AIML", name: "Artificial Intelligence and Machine Learning" },
-          { code: "BT", name: "Biotechnology" },
-          { code: "CV", name: "Civil" },
-          { code: "ME", name: "Mechanical Engineering" },
-          { code: "ETE", name: "Electronics and Telecommunication Engineering" },
-          { code: "EIE", name: "Electronics and Instrumentation Engineering" },
-          { code: "ECE", name: "Electronics and Communication Engineering" },
-          { code: "ASE", name: "Aerospace Engineering" },
-          { code: "IDRC", name: "IDRC" },
-          { code: "LIB", name: "Library" },
-          { code: "CMT", name: "Central Maintenance" },
-          { code: "MCA", name: "Masters of Computer Applications" },
-          { code: "ADMIN_BLOCK", name: "Admin Block" },
-          { code: "CHEM", name: "Chemical Engineering" },
-          { code: "PHY", name: "Physics Department" },
-          { code: "MATH", name: "Mathematics Department" },
-        ].map((dept) => (
-          <option key={dept.code} value={dept.code}>
-            {dept.code} - {dept.name}
-          </option>
-        ))}
-      </select>
-    </div>
-    {errors.department && (
-      <p className="text-red-500 text-sm mt-1">
-        {errors.department.message}
-      </p>
-    )}
-  </div>
-)}
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text font-medium">Department</span>
+                </label>
+                <Combobox
+                  value={
+                    departmentOptions.find(
+                      (d) => d.value === watch("department")
+                    ) || null
+                  }
+                  onChange={(val) => setValue("department", val?.value)}
+                >
+                  <div className="relative">
+                    <div className="relative w-full cursor-default input input-bordered">
+                      <Combobox.Input
+                        className="w-full bg-transparent focus:outline-none"
+                        placeholder="Select Department"
+                        displayValue={(option) => option?.label || ""}
+                        onChange={(event) => setQuery(event.target.value)}
+                      />
+                      <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
+                        <ChevronDown className="h-4 w-4 text-base-content/40" />
+                      </Combobox.Button>
+                    </div>
 
+                    <Combobox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-base-100 py-1 text-sm shadow-lg ring-1 ring-black/5 focus:outline-none">
+                      {departmentOptions
+                        .filter((option) =>
+                          option.label
+                            .toLowerCase()
+                            .includes(query.toLowerCase())
+                        )
+                        .map((option) => (
+                          <Combobox.Option
+                            key={option.value}
+                            value={option}
+                            className={({ active }) =>
+                              `cursor-pointer select-none relative px-4 py-2 ${
+                                active ? "bg-primary text-white" : ""
+                              }`
+                            }
+                          >
+                            {({ selected }) => (
+                              <>
+                                <span
+                                  className={`block truncate ${
+                                    selected ? "font-medium" : ""
+                                  }`}
+                                >
+                                  {option.label}
+                                </span>
+                                {selected && (
+                                  <span className="absolute inset-y-0 right-4 flex items-center text-white">
+                                    <Check className="h-4 w-4" />
+                                  </span>
+                                )}
+                              </>
+                            )}
+                          </Combobox.Option>
+                        ))}
+                    </Combobox.Options>
+                  </div>
+                </Combobox>
+                {errors.department && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.department.message}
+                  </p>
+                )}
+              </div>
+            )}
 
             {/* Email */}
             <div className="form-control">
@@ -246,15 +274,7 @@ const CreateUserPage = () => {
             </button>
           </form>
 
-          {/* Footer */}
-          <div className="text-center">
-            <p className="text-base-content/60">
-              Already have an account?{" "}
-              <Link to="/login" className="link link-primary">
-                Sign in
-              </Link>
-            </p>
-          </div>
+          
         </div>
       </div>
     </div>
