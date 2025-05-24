@@ -1,242 +1,358 @@
 import React, { useState } from 'react';
 import { axiosInstance } from "../libs/axios.libs.js";
-import NavbarCoordinator from '../components/NavbarCoordinator.jsx';
+import {
+  Box,
+  Typography,
+  TextField,
+  MenuItem,
+  Button,
+  Alert,
+  CircularProgress,
+  useMediaQuery
+} from '@mui/material';
+import { styled } from '@mui/material/styles';
+import { FaPlusCircle } from 'react-icons/fa';
+import { motion } from 'framer-motion';
 
-// Assuming you have a function or hook to get the auth token, e.g., from your auth store
-// import { useAuth } from '../hooks/useAuth'; // Example hook
+const DEPARTMENTS = ["ISE", "CSE", "AIML", "BT", "CV", "ME", "ETE", "EIE", "ECE", "ASE", "IDRC", "LIB", "CMT"];
+
+const PRIORITIES = [
+  { value: 'LOW', label: 'Low', bgcolor: '#e6f4ea', color: '#2e7d32', border: '#c8e6c9' },
+  { value: 'MEDIUM', label: 'Medium', bgcolor: '#fff9e6', color: '#c77700', border: '#ffecb3' },
+  { value: 'HIGH', label: 'High', bgcolor: '#ffeeee', color: '#c62828', border: '#ffcdd2' },
+];
+
+const Bg = styled(Box)`
+  min-height: 100vh;
+  width: 100vw;
+  background: #f5f7fa;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  overflow: auto;
+`;
+
+const Card = styled(motion.div)(({ theme }) => ({
+  background: '#fff',
+  boxShadow: theme.shadows[4],
+  borderRadius: 20,
+  border: `1.5px solid ${theme.palette.grey[200]}`,
+  padding: '36px 32px 28px 32px',
+  maxWidth: 980,
+  width: '100%',
+  margin: '32px 0',
+  [theme.breakpoints.down('md')]: {
+    padding: '18px 4px 12px 4px',
+    maxWidth: '99vw',
+  },
+  display: 'flex',
+  flexDirection: 'column',
+  minHeight: 'auto',
+}));
+
+const ProgressBar = styled(Box)(({ theme }) => ({
+  height: 5,
+  width: '100%',
+  background: theme.palette.primary.main,
+  borderRadius: 8,
+  marginBottom: 18,
+  opacity: 0.18,
+}));
+
+const FloatingLabelField = styled(TextField)(({ theme }) => ({
+  '& label.Mui-focused': {
+    color: theme.palette.primary.main,
+    fontWeight: 600,
+  },
+  '& .MuiOutlinedInput-root': {
+    borderRadius: 10,
+    background: theme.palette.grey[50],
+    transition: 'box-shadow 0.2s',
+    '&.Mui-focused fieldset': {
+      borderColor: theme.palette.primary.main,
+      boxShadow: `0 0 0 2px ${theme.palette.primary.main}22`,
+    },
+  },
+}));
+
+const ActionButton = styled(Button)(({ theme }) => ({
+  borderRadius: 999,
+  fontWeight: 700,
+  fontSize: '0.9rem',
+  padding: '8px 18px',
+  boxShadow: '0 2px 12px 0 rgba(25,118,210,0.08)',
+  transition: 'transform 0.12s, box-shadow 0.12s',
+  '&:hover': {
+    transform: 'translateY(-2px) scale(1.03)',
+    boxShadow: '0 4px 24px 0 rgba(25,118,210,0.13)',
+  },
+}));
+
+const FieldsGrid = styled(Box)(({ theme }) => ({
+  display: 'grid',
+  gridTemplateColumns: '1fr 1fr',
+  gap: theme.spacing(3.5),
+  [theme.breakpoints.down('md')]: {
+    gridTemplateColumns: '1fr',
+    gap: theme.spacing(2.5),
+  },
+}));
+
+const PriorityButton = styled(Button)(({ bgcolor, color, border, selected }) => ({
+  background: bgcolor,
+  color: color,
+  border: `2px solid ${selected ? color : border}`,
+  fontWeight: 600,
+  fontSize: '0.95rem',
+  borderRadius: 12,
+  minWidth: 100,
+  padding: '8px 16px',
+  boxShadow: selected ? `0 2px 10px 0 ${color}22` : 'none',
+  transition: 'all 0.15s',
+  outline: selected ? `2px solid ${color}55` : 'none',
+  '&:hover': {
+    background: bgcolor,
+    border: `2.5px solid ${color}`,
+    boxShadow: `0 3px 15px 0 ${color}22`,
+    color: color,
+  },
+}));
 
 const CreateTicketPage = () => {
-  // const { token } = useAuth(); // Example: Get token from auth context or store
-
   const [ticket, setTicket] = useState({
     title: '',
     description: '',
     department: '',
-    lab: '', // Maps to 'location' on backend
-    deviceType: '', // Not used by current backend code
+    lab: '',
+    deviceType: '',
     deviceId: '',
-    priority: 'MEDIUM', // Not sent to backend based on controller
-    status: 'OPEN', // Set by backend
+    priority: 'LOW',
+    status: 'OPEN',
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitMessage, setSubmitMessage] = useState(null); // To show success or error messages
-  const [isError, setIsError] = useState(false); // To style message based on success/error
+  const [submitMessage, setSubmitMessage] = useState(null);
+  const [isError, setIsError] = useState(false);
+  const isMobile = useMediaQuery('(max-width:900px)');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setTicket({ ...ticket, [name]: value });
   };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  setIsSubmitting(true);
-  setSubmitMessage(null);
-  setIsError(false);
-
-  const ticketDataToSend = {
-    title: ticket.title,
-    department: ticket.department,
-    deviceId: ticket.deviceId,
-    location: ticket.lab,
-    description: ticket.description,
+  const handlePriority = (priority) => {
+    setTicket({ ...ticket, priority });
   };
 
-  console.log('Submitting ticket data:', ticketDataToSend);
-
-  try {
-    const response = await axiosInstance.post("/tickets/create", ticketDataToSend, {
-      headers: {
-        'Content-Type': 'application/json',
-        // 'Authorization': `Bearer ${token}`,
-      },
-    });
-
-    const data = response.data;
-    console.log('Ticket created successfully:', data);
-
-    setSubmitMessage(data.message || 'Ticket created successfully!');
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitMessage(null);
     setIsError(false);
 
-    // Reset form
-    setTicket({
-      title: '',
-      description: '',
-      department: '',
-      lab: '',
-      deviceType: '',
-      deviceId: '',
-      priority: 'MEDIUM',
-      status: 'OPEN',
-    });
+    const ticketDataToSend = {
+      title: ticket.title,
+      department: ticket.department,
+      deviceId: ticket.deviceId,
+      location: ticket.lab,
+      description: ticket.description,
+      priority: ticket.priority,
+    };
 
-  } catch (error) {
-    console.error('Error creating ticket:', error);
-    setSubmitMessage(
-      error.response?.data?.message || 'An error occurred. Please try again.'
-    );
-    setIsError(true);
-  } finally {
-    setIsSubmitting(false);
-  }
-};
-
+    try {
+      const response = await axiosInstance.post("/tickets/create", ticketDataToSend);
+      const data = response.data;
+      setSubmitMessage(data.message || 'Ticket created successfully!');
+      setIsError(false);
+      setTicket({
+        title: '',
+        description: '',
+        department: '',
+        lab: '',
+        deviceType: '',
+        deviceId: '',
+        priority: 'MEDIUM',
+        status: 'OPEN',
+      });
+    } catch (error) {
+      setSubmitMessage(
+        error.response?.data?.message || 'An error occurred. Please try again.'
+      );
+      setIsError(true);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
-    
-    <div className="container mx-auto p-4 md:p-8">
-      <NavbarCoordinator />
-      {/* Card Container for better visual grouping */}
-      <div className="card bg-base-100 shadow-xl p-6 md:p-8">
-        <div className="card-body">
-          <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold text-primary pt-4" >Create Support Ticket</h1>
-            <p className="text-sm text-gray-500 mt-2">Please fill all the required fields to submit your ticket</p>
-          </div>
-
-          {/* Submit Message Alert */}
-          {submitMessage && (
-             <div role="alert" className={`alert mb-6 ${isError ? 'alert-error' : 'alert-success'}`}>
-               {/* You might need icons here based on your DaisyUI setup */}
-               {/* <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg> */}
-               <span>{submitMessage}</span>
-             </div>
-          )}
-
-
-          <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Column 1 */}
-            <div className="space-y-4">
-              {/* Title Input */}
-              <div className="form-control w-full">
-                <label className="label">
-                  <span className="label-text">Title</span>
-                </label>
-                <input
-                  type="text"
-                  name="title"
-                  className="input input-bordered w-full"
-                  value={ticket.title}
-                  onChange={handleChange}
-                  required
-                  placeholder="Brief title of the issue"
-                />
-              </div>
-
-              {/* Department Select */}
-              <div className="form-control w-full">
-                <label className="label">
-                  <span className="label-text">Department</span>
-                </label>
-                <select
-                  name="department"
-                  className="select select-bordered w-full"
-                  value={ticket.department}
-                  onChange={handleChange}
-                  required
-                >
-                  <option value="" disabled>Select Department</option>
-                  {["ISE", "CSE", "AIML", "BT", "CV", "ME", "ETE", "EIE", "ECE", "ASE", "IDRC", "LIB", "CMT"].map(dep => (
-                    <option key={dep} value={dep}>{dep}</option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Lab Input (Maps to Location on backend) */}
-              <div className="form-control w-full">
-                <label className="label">
-                  <span className="label-text">Lab / Location</span>
-                </label>
-                <input
-                  type="text"
-                  name="lab" // Use 'lab' in state, but send as 'location'
-                  className="input input-bordered w-full"
-                  value={ticket.lab}
-                  onChange={handleChange}
-                  required
-                  placeholder="Lab number or name (e.g., F101, Library)"
-                />
-              </div>
-            </div>
-
-            {/* Column 2 */}
-            <div className="space-y-4">
-              {/* Device Type Input (Not sent to backend controller provided) */}
-               <div className="form-control w-full">
-                <label className="label">
-                  <span className="label-text">Device Type</span>
-                </label>
-                 {/* Note: This field is *not* sent to your current backend controller */}
-                <input
-                  type="text"
-                  name="deviceType"
-                  className="input input-bordered w-full"
-                  value={ticket.deviceType}
-                  onChange={handleChange}
-                  placeholder="Computer, Printer, etc."
-                  // Made optional as it's not required by the backend controller
-                />
-              </div>
-
-              {/* Device ID Input */}
-              <div className="form-control w-full">
-                <label className="label">
-                  <span className="label-text">Device ID</span>
-                </label>
-                <input
-                  type="text"
-                  name="deviceId"
-                  className="input input-bordered w-full"
-                  value={ticket.deviceId}
-                  onChange={handleChange}
-                  required
-                  placeholder="Serial number or ID"
-                />
-              </div>
-            </div>
-
-            {/* Description Full Width */}
-            <div className="col-span-1 md:col-span-2">
-              <div className="form-control w-full">
-                <label className="label">
-                  <span className="label-text">Description</span>
-                </label>
-                <textarea
-                  name="description"
-                  className="textarea textarea-bordered w-full h-32"
-                  value={ticket.description}
-                  onChange={handleChange}
-                  required
-                  placeholder="Please provide detailed information about the issue"
-                ></textarea>
-              </div>
-            </div>
-
-            {/* Buttons */}
-            <div className="col-span-1 md:col-span-2 flex justify-end space-x-4 mt-6">
-              {/* You might want a proper navigation handler for Cancel */}
-              <button type="button" className="btn btn-ghost" onClick={() => console.log('Cancel clicked')}>Cancel</button>
-
-              <button
-                type="submit"
-                className={`btn btn-primary ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`} // Simple visual disable
-                disabled={isSubmitting} // Disable button while submitting
-              >
-                {isSubmitting ? (
-                   <>
-                     {/* Assuming you have lucide-react or similar for icons */}
-                     {/* <Loader2 className="animate-spin mr-2 h-5 w-5" /> */}
-                     Submitting...
-                   </>
-                ) : (
-                  "Submit Ticket"
-                )}
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
+    <Bg>
+      <Card
+        initial={{ opacity: 0, y: 40 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: 'easeOut' }}
+      >
+        <ProgressBar as={motion.div} initial={{ width: 0 }} animate={{ width: '100%' }} transition={{ duration: 1.2, ease: 'easeOut' }} />
+        <Box display="flex" alignItems="center" gap={2} mb={1}>
+          <Box color="#1976d2" fontSize={isMobile ? 28 : 34} paddingBottom={1}>
+            <FaPlusCircle />
+          </Box>
+          <Typography 
+            variant={isMobile ? "h6" : "h5"} 
+            fontWeight={700} 
+            color="#1e293b" 
+            sx={{ 
+              fontSize: isMobile ? '1.4rem' : '1.75rem',
+            }}
+            paddingBottom={1}
+          >
+            Create Support Ticket
+          </Typography>
+        </Box>
+        
+        {submitMessage && (
+          <Alert 
+            severity={isError ? "error" : "success"} 
+            sx={{ mb: 2, borderRadius: 2 }}
+          >
+            {submitMessage}
+          </Alert>
+        )}
+        <form onSubmit={handleSubmit} autoComplete="off" style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }}>
+          <FieldsGrid>
+            <FloatingLabelField
+              fullWidth
+              label="Title"
+              name="title"
+              value={ticket.title}
+              onChange={handleChange}
+              required
+              variant="outlined"
+              placeholder="Brief title of the issue"
+              autoFocus
+            />
+            <FloatingLabelField
+              fullWidth
+              select
+              label="Department"
+              name="department"
+              value={ticket.department}
+              onChange={handleChange}
+              required
+              variant="outlined"
+            >
+              <MenuItem value="" disabled>
+                Select Department
+              </MenuItem>
+              {DEPARTMENTS.map((dep) => (
+                <MenuItem key={dep} value={dep}>
+                  {dep}
+                </MenuItem>
+              ))}
+            </FloatingLabelField>
+            <FloatingLabelField
+              fullWidth
+              label="Lab / Location"
+              name="lab"
+              value={ticket.lab}
+              onChange={handleChange}
+              required
+              variant="outlined"
+              placeholder="Lab number or name (e.g., F101, Library)"
+            />
+            <FloatingLabelField
+              fullWidth
+              label="Device Type"
+              name="deviceType"
+              value={ticket.deviceType}
+              onChange={handleChange}
+              variant="outlined"
+              placeholder="Computer, Printer, etc."
+            />
+            <FloatingLabelField
+              fullWidth
+              label="Device ID"
+              name="deviceId"
+              value={ticket.deviceId}
+              onChange={handleChange}
+              required
+              variant="outlined"
+              placeholder="Serial number or ID"
+            />
+            <Box display="flex" flexDirection="column" alignItems="flex-start" justifyContent="center" sx={{ mt: isMobile ? 1 : 0 }}>
+              {/* <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 700, color: '#374151', letterSpacing: 0.2 }}>
+                Priority
+              </Typography> */}
+              <Box display="flex" gap={2}>
+                {PRIORITIES.map((p) => (
+                  <PriorityButton
+                    key={p.value}
+                    bgcolor={p.bgcolor}
+                    color={p.color}
+                    border={p.border}
+                    selected={ticket.priority === p.value}
+                    type="button"
+                    onClick={() => handlePriority(p.value)}
+                  >
+                    {p.label}
+                  </PriorityButton>
+                ))}
+              </Box>
+            </Box>
+          </FieldsGrid>
+          <Box mt={isMobile ? 1.5 : 2} mb={isMobile ? 1.5 : 2}>
+            <FloatingLabelField
+              fullWidth
+              multiline
+              rows={3}
+              label="Description"
+              name="description"
+              value={ticket.description}
+              onChange={handleChange}
+              required
+              variant="outlined"
+              placeholder="Please provide detailed information about the issue"
+            />
+          </Box>
+          <Box display="flex" justifyContent="flex-end" gap={2} mt={1}>
+            <ActionButton 
+              variant="outlined" 
+              color="inherit"
+              onClick={() => {
+                setTicket({
+                  title: '',
+                  description: '',
+                  department: '',
+                  lab: '',
+                  deviceType: '',
+                  deviceId: '',
+                  priority: 'LOW',
+                  status: 'OPEN',
+                });
+              }}
+              disabled={isSubmitting}
+            >
+              Cancel
+            </ActionButton>
+            <ActionButton
+              type="submit"
+              variant="contained"
+              color="primary"
+              disabled={isSubmitting}
+              startIcon={isSubmitting ? <CircularProgress size={20} /> : null}
+              sx={{
+                background: '#1976d2',
+                color: 'white',
+                '&:hover': {
+                  background: '#1565c0',
+                }
+              }}
+            >
+              {isSubmitting ? 'Submitting...' : 'Submit Ticket'}
+            </ActionButton>
+          </Box>
+        </form>
+      </Card>
+    </Bg>
   );
 };
 

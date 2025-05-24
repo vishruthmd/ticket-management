@@ -4,14 +4,13 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import IconButton from '@mui/material/IconButton';
 import LogoutIcon from '@mui/icons-material/Logout';
 import Avatar from '@mui/material/Avatar';
 import { useNavigate } from 'react-router-dom';
-import { useAuthStore } from '../store/useAuthStore';
-import logo from '../assets/rvce.png';
+import { useAuthStore } from '../../store/useAuthStore';
+import logo from '../../assets/rvce.png';
 
-export default function AdminHeader({ children }) {
+export default function TechnicianHeader() {
   const navigate = useNavigate();
   const { logout, authUser } = useAuthStore();
 
@@ -23,8 +22,7 @@ export default function AdminHeader({ children }) {
   return (
     <AppBar position="fixed" color="inherit" elevation={1} sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
       <Toolbar>
-        {children}
-        <Box display="flex" alignItems="center" gap={2}>
+        <Box display="flex" alignItems="center" gap={2} sx={{ ml: 2 }}>
           <img src={logo} alt="IT Call Log App Logo" style={{ height: 40 }} />
           <Typography variant="h6" color="primary" fontWeight={700}>
             IT Call Log App
@@ -35,10 +33,10 @@ export default function AdminHeader({ children }) {
           {authUser && (
             <>
               <Avatar sx={{ bgcolor: 'primary.main' }}>
-                {authUser.name ? authUser.name[0].toUpperCase() : 'U'}
+                {authUser.name ? authUser.name[0].toUpperCase() : 'T'}
               </Avatar>
               <Typography variant="subtitle1" color="text.primary">
-                {authUser.name}
+                {authUser.name} (Technician)
               </Typography>
               <Button
                 variant="outlined"

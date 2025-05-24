@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/useAuthStore';
 import logo from '../assets/rvce.png';
 
-export default function AdminHeader({ children }) {
+export default function CoordinatorHeader({ children }) {
   const navigate = useNavigate();
   const { logout, authUser } = useAuthStore();
 
