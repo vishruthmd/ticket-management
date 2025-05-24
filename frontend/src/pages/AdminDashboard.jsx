@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import PageHeader from '../components/ui/PageHeader';
 import Card from '../components/ui/Card';
 import { FaUsers, FaUserTie, FaClipboardList, FaExclamationTriangle, FaTimes } from 'react-icons/fa';
@@ -15,6 +15,11 @@ import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import Chip from '@mui/material/Chip';
 import Paper from '@mui/material/Paper';
+import InputLabel from '@mui/material/InputLabel';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import { Toaster, toast } from 'react-hot-toast';
 
 const statCardsConfig = [
   {
@@ -32,9 +37,9 @@ const statCardsConfig = [
     path: '/view-tickets-admin',
   },
   {
-    title: 'Urgent Tickets',
-    icon: <FaExclamationTriangle className="h-6 w-6 text-accent-600" />, 
-    color: 'bg-accent-50 text-accent-600',
+    title: 'Unresolved High Priority Tickets',
+    icon: <FaExclamationTriangle className="h-6 w-6 text-red-600" />, 
+    color: 'bg-red-50 text-red-600',
     statKey: 'urgentTickets',
     path: '/view-tickets-admin',
   },
@@ -98,6 +103,12 @@ const AdminDashboard = () => {
   const [recentTickets, setRecentTickets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedTicket, setSelectedTicket] = useState(null);
+  const [assignModalTicket, setAssignModalTicket] = useState(null);
+  const [technicians, setTechnicians] = useState([]);
+  const [selectedTechnicianId, setSelectedTechnicianId] = useState("");
+  const [assigning, setAssigning] = useState(false);
+  const [assignError, setAssignError] = useState(null);
+  const [techLoading, setTechLoading] = useState(false);
 
   useEffect(() => {
     async function fetchStats() {
@@ -140,6 +151,45 @@ const AdminDashboard = () => {
     }
     fetchStats();
   }, []);
+
+  // Fetch technicians when assign modal opens
+  useEffect(() => {
+    if (assignModalTicket) {
+      setTechLoading(true);
+      axiosInstance
+        .get("/users/all-technicians")
+        .then((res) => {
+          setTechnicians(res.data.technicians);
+        })
+        .catch(() => {
+          setTechnicians([]);
+        })
+        .finally(() => setTechLoading(false));
+    }
+  }, [assignModalTicket]);
+
+  const handleAssign = async () => {
+    if (!selectedTechnicianId) {
+      setAssignError("Please select a technician.");
+      return;
+    }
+    setAssigning(true);
+    setAssignError(null);
+    try {
+      await axiosInstance.put(
+        `/tickets/set-to-in-progress/${assignModalTicket.id}/${selectedTechnicianId}`
+      );
+      setRecentTickets((prev) => prev.filter((t) => t.id !== assignModalTicket.id));
+      setAssignModalTicket(null);
+      setSelectedTechnicianId("");
+      toast.success('Ticket assigned!');
+    } catch (error) {
+      setAssignError("Assignment failed. Try again.");
+      toast.error('Failed assigning ticket');
+    } finally {
+      setAssigning(false);
+    }
+  };
 
   return (
     <div>
@@ -210,7 +260,7 @@ const AdminDashboard = () => {
           </div>
         </div>
         <div>
-          <h2 className="text-lg font-semibold mb-4">Unassigned Tickets</h2>
+          <h2 className="text-lg font-semibold mb-4">Recent Unassigned Tickets</h2>
           <Card>
             <div className="space-y-4">
               {loading ? (
@@ -232,7 +282,14 @@ const AdminDashboard = () => {
                     <p className="mt-1 text-sm text-gray-900">{ticket.description?.slice(0, 80) || 'No description provided.'}</p>
                     <div className="mt-2 flex justify-between text-xs text-gray-500">
                       <span>{ticket.createdAt}</span>
-                      <button className="text-primary-600 hover:text-primary-800">
+                      <button
+                        className="text-primary-600 hover:text-primary-800 font-semibold cursor-pointer"
+                        onClick={() => {
+                          setAssignModalTicket(ticket);
+                          setAssignError(null);
+                          setSelectedTechnicianId("");
+                        }}
+                      >
                         Assign Technician
                       </button>
                     </div>
@@ -329,7 +386,174 @@ const AdminDashboard = () => {
             </Paper>
           </Dialog>
         )}
+        {/* Assign Technician Modal for Unassigned Tickets */}
+        {assignModalTicket && (
+          <Dialog
+            open={!!assignModalTicket}
+            onClose={() => {
+              setAssignModalTicket(null);
+              setSelectedTechnicianId("");
+              setAssignError(null);
+            }}
+            maxWidth="sm"
+            fullWidth
+            PaperProps={{
+              variants: modalVariants,
+              initial: "hidden",
+              animate: "visible",
+              exit: "exit",
+              className: "rounded-3xl",
+              style: {
+                overflow: "visible",
+                background: "rgba(255,255,255,0.98)",
+                borderRadius: 32,
+                boxShadow: "0 8px 40px rgba(0,0,0,0.10)",
+              },
+            }}
+          >
+            <Paper
+              elevation={0}
+              sx={{
+                borderRadius: 6,
+                p: { xs: 2, sm: 4 },
+                background: "transparent",
+                boxShadow: "none",
+                overflowY: "auto",
+                whiteSpace: "pre-wrap",
+                wordBreak: "break-word",
+              }}
+            >
+              <DialogContent
+                dividers
+                sx={{
+                  maxHeight: "80vh",
+                  overflowY: "auto",
+                  p: { xs: 2, sm: 4 },
+                }}
+              >
+                <Box display="flex" alignItems="center" justifyContent="space-between" mb={2}>
+                  <Typography variant="h5" fontWeight={700} color="primary.main">
+                    Assign Technician
+                  </Typography>
+                  <Button
+                    onClick={() => {
+                      setAssignModalTicket(null);
+                      setSelectedTechnicianId("");
+                      setAssignError(null);
+                    }}
+                    sx={{ minWidth: 0, p: 1, borderRadius: 2 }}
+                  >
+                    <FaTimes className="h-5 w-5 text-gray-500" />
+                  </Button>
+                </Box>
+                <Divider sx={{ mb: 2 }} />
+                <Box mb={3}>
+                  <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                    Title
+                  </Typography>
+                  <Typography variant="h6" color="text.primary" fontWeight={600}>
+                    {assignModalTicket.issue}
+                  </Typography>
+                </Box>
+                <Box mb={3}>
+                  <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                    Description
+                  </Typography>
+                  <Paper variant="outlined" sx={{ p: 2, borderRadius: 3, background: "#f8fafc", fontSize: 15, color: "#222", whiteSpace: "pre-line" }}>
+                    {assignModalTicket.description || "No description provided."}
+                  </Paper>
+                </Box>
+                <Grid container spacing={3} mb={3}>
+                  <Grid item xs={12} sm={6}>
+                    <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                      Department
+                    </Typography>
+                    <Typography variant="body1" color="text.primary">
+                      {assignModalTicket.department}
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                      Location
+                    </Typography>
+                    <Typography variant="body1" color="text.primary">
+                      {assignModalTicket.location}
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                      Priority
+                    </Typography>
+                    <Chip {...getPriorityChipProps(assignModalTicket.priority)} size="small" />
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                      Status
+                    </Typography>
+                    <Chip {...getStatusChipProps(assignModalTicket.status)} size="small" />
+                  </Grid>
+                </Grid>
+                <Divider sx={{ mb: 3 }} />
+                <FormControl fullWidth sx={{ mb: 2 }}>
+                  <InputLabel id="technician-select-label">Select Technician</InputLabel>
+                  <Select
+                    labelId="technician-select-label"
+                    id="technician-select"
+                    value={selectedTechnicianId}
+                    label="Select Technician"
+                    onChange={(e) => setSelectedTechnicianId(e.target.value)}
+                    disabled={techLoading}
+                    sx={{ borderRadius: 2, bgcolor: "#f8fafc" }}
+                  >
+                    <MenuItem value="" disabled>
+                      Choose a technician
+                    </MenuItem>
+                    {technicians.map((tech) => (
+                      <MenuItem key={tech.id} value={tech.id}>
+                        {tech.name} ({tech.email})
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+                {assignError && (
+                  <Box mt={2} mb={1} color="error.main" bgcolor="#fee2e2" borderRadius={2} px={2} py={1} fontSize={14}>
+                    {assignError}
+                  </Box>
+                )}
+                <DialogActions sx={{ mt: 2, px: 0 }}>
+                  <Button
+                    onClick={() => {
+                      setAssignModalTicket(null);
+                      setSelectedTechnicianId("");
+                      setAssignError(null);
+                    }}
+                    color="inherit"
+                    variant="outlined"
+                    fullWidth
+                    size="large"
+                    sx={{ borderRadius: 2, fontWeight: 600, fontSize: 16 }}
+                    disabled={assigning}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    onClick={handleAssign}
+                    color="primary"
+                    variant="contained"
+                    fullWidth
+                    size="large"
+                    sx={{ borderRadius: 2, fontWeight: 600, fontSize: 16 }}
+                    disabled={assigning}
+                  >
+                    {assigning ? "Assigning..." : "Assign Technician"}
+                  </Button>
+                </DialogActions>
+              </DialogContent>
+            </Paper>
+          </Dialog>
+        )}
       </AnimatePresence>
+      <Toaster position="top-center" toastOptions={{ duration: 2500 }} />
     </div>
   );
 };

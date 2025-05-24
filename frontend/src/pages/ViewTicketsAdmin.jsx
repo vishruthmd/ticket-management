@@ -65,18 +65,21 @@ const ViewTicketsAdmin = () => {
     },
     { header: "Department", field: "department", sortable: true },
     { header: "Location", field: "location", sortable: true },
-    { header: "Device ID", field: "deviceId", sortable: true },
+    {
+      header: "Priority",
+      field: "priority",
+      sortable: true,
+      render: (row) => <Chip label={row.priority} sx={{
+        bgcolor: row.priority === 'HIGH' ? '#fee2e2' : row.priority === 'MEDIUM' ? '#fef9c3' : '#dcfce7',
+        color: row.priority === 'HIGH' ? '#b91c1c' : row.priority === 'MEDIUM' ? '#b45309' : '#15803d',
+        fontWeight: 600, fontSize: 13, borderRadius: 9999
+      }} size="small" />,
+    },
     {
       header: "Status",
       field: "status",
       sortable: true,
       render: (row) => <Chip {...getStatusChipProps(row.status)} size="small" />,
-    },
-    {
-      header: "Coordinator",
-      field: "coordinator",
-      sortable: false,
-      render: (row) => row.coordinator?.name || "N/A",
     },
     {
       header: "Technician",
@@ -177,16 +180,16 @@ const ViewTicketsAdmin = () => {
                       <td className="px-4 py-3">{selectedTicket.location}</td>
                     </tr>
                     <tr>
-                      <td className="px-4 py-3 font-medium">Device ID</td>
-                      <td className="px-4 py-3">{selectedTicket.deviceId}</td>
+                      <td className="px-4 py-3 font-medium">Priority</td>
+                      <td className="px-4 py-3"><Chip label={selectedTicket.priority} sx={{
+                        bgcolor: selectedTicket.priority === 'HIGH' ? '#fee2e2' : selectedTicket.priority === 'MEDIUM' ? '#fef9c3' : '#dcfce7',
+                        color: selectedTicket.priority === 'HIGH' ? '#b91c1c' : selectedTicket.priority === 'MEDIUM' ? '#b45309' : '#15803d',
+                        fontWeight: 600, fontSize: 13, borderRadius: 9999
+                      }} size="small" /></td>
                     </tr>
                     <tr>
                       <td className="px-4 py-3 font-medium">Status</td>
                       <td className="px-4 py-3"><Chip {...getStatusChipProps(selectedTicket.status)} size="small" /></td>
-                    </tr>
-                    <tr>
-                      <td className="px-4 py-3 font-medium">Coordinator</td>
-                      <td className="px-4 py-3">{selectedTicket.coordinator?.name || "N/A"}</td>
                     </tr>
                     <tr>
                       <td className="px-4 py-3 font-medium">Technician</td>

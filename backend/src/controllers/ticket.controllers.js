@@ -70,6 +70,9 @@ const createTicket = async (req, res) => {
 const getAllTickets = async (req, res) => {
   try {
     const tickets = await db.ticket.findMany({
+      orderBy: {
+        updatedAt: "desc",
+      },
       include: {
         coordinator: {
           select: {
