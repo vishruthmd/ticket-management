@@ -47,6 +47,12 @@ enum TicketStatus {
   CLOSED
 }
 
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
 model User {
   id                  String    @id @default(cuid())
   name                String
@@ -72,6 +78,7 @@ model Ticket {
   title       String
   description String
   department  Department
+  priority    Priority     @default(LOW)
   location    String
   deviceId    String
   status      TicketStatus @default(OPEN)

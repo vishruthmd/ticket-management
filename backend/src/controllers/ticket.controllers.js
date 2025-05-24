@@ -33,7 +33,7 @@ import { STATUSES } from "../libs/constants.js";
 // }
 
 const createTicket = async (req, res) => {
-  const { title, department, deviceId, location, description } = req.body;
+  const { title, department, deviceId, location, description, priority } = req.body;
 
   try {
     const newTicket = await db.ticket.create({
@@ -43,6 +43,7 @@ const createTicket = async (req, res) => {
         deviceId,
         location,
         description,
+        priority,
         status: "OPEN", // All new tickets start as OPEN
         coordinator: {
           connect: {

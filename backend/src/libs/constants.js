@@ -44,4 +44,6 @@ const ROLES = ["TECHNICIAN", "ADMIN", "COORDINATOR"];
 
 const STATUSES = ["OPEN", "IN_PROGRESS", "CLOSED"];
 
-export { DEPARTMENTS, STATUSES, ROLES, departmentOptions };
+const PRIORITIES = ["LOW", "MEDIUM", "HIGH"];
+
+export { DEPARTMENTS, STATUSES, ROLES, departmentOptions, PRIORITIES };

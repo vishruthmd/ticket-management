@@ -69,6 +69,15 @@ export const TicketStatus: {
 
 export type TicketStatus = (typeof TicketStatus)[keyof typeof TicketStatus]
 
+
+export const Priority: {
+  LOW: 'LOW',
+  MEDIUM: 'MEDIUM',
+  HIGH: 'HIGH'
+};
+
+export type Priority = (typeof Priority)[keyof typeof Priority]
+
 }
 
 export type userRole = $Enums.userRole
@@ -82,6 +91,10 @@ export const Department: typeof $Enums.Department
 export type TicketStatus = $Enums.TicketStatus
 
 export const TicketStatus: typeof $Enums.TicketStatus
+
+export type Priority = $Enums.Priority
+
+export const Priority: typeof $Enums.Priority
 
 /**
  * ##  Prisma Client ʲˢ
@@ -2275,6 +2288,7 @@ export namespace Prisma {
     title: string | null
     description: string | null
     department: $Enums.Department | null
+    priority: $Enums.Priority | null
     location: string | null
     deviceId: string | null
     status: $Enums.TicketStatus | null
@@ -2292,6 +2306,7 @@ export namespace Prisma {
     title: string | null
     description: string | null
     department: $Enums.Department | null
+    priority: $Enums.Priority | null
     location: string | null
     deviceId: string | null
     status: $Enums.TicketStatus | null
@@ -2309,6 +2324,7 @@ export namespace Prisma {
     title: number
     description: number
     department: number
+    priority: number
     location: number
     deviceId: number
     status: number
@@ -2328,6 +2344,7 @@ export namespace Prisma {
     title?: true
     description?: true
     department?: true
+    priority?: true
     location?: true
     deviceId?: true
     status?: true
@@ -2345,6 +2362,7 @@ export namespace Prisma {
     title?: true
     description?: true
     department?: true
+    priority?: true
     location?: true
     deviceId?: true
     status?: true
@@ -2362,6 +2380,7 @@ export namespace Prisma {
     title?: true
     description?: true
     department?: true
+    priority?: true
     location?: true
     deviceId?: true
     status?: true
@@ -2452,6 +2471,7 @@ export namespace Prisma {
     title: string
     description: string
     department: $Enums.Department
+    priority: $Enums.Priority
     location: string
     deviceId: string
     status: $Enums.TicketStatus
@@ -2486,6 +2506,7 @@ export namespace Prisma {
     title?: boolean
     description?: boolean
     department?: boolean
+    priority?: boolean
     location?: boolean
     deviceId?: boolean
     status?: boolean
@@ -2505,6 +2526,7 @@ export namespace Prisma {
     title?: boolean
     description?: boolean
     department?: boolean
+    priority?: boolean
     location?: boolean
     deviceId?: boolean
     status?: boolean
@@ -2524,6 +2546,7 @@ export namespace Prisma {
     title?: boolean
     description?: boolean
     department?: boolean
+    priority?: boolean
     location?: boolean
     deviceId?: boolean
     status?: boolean
@@ -2543,6 +2566,7 @@ export namespace Prisma {
     title?: boolean
     description?: boolean
     department?: boolean
+    priority?: boolean
     location?: boolean
     deviceId?: boolean
     status?: boolean
@@ -2555,7 +2579,7 @@ export namespace Prisma {
     remarks?: boolean
   }
 
-  export type TicketOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "description" | "department" | "location" | "deviceId" | "status" | "createdAt" | "updatedAt" | "coordinatorId" | "technicianId" | "assignedAt" | "resolvedAt" | "remarks", ExtArgs["result"]["ticket"]>
+  export type TicketOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "description" | "department" | "priority" | "location" | "deviceId" | "status" | "createdAt" | "updatedAt" | "coordinatorId" | "technicianId" | "assignedAt" | "resolvedAt" | "remarks", ExtArgs["result"]["ticket"]>
   export type TicketInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     coordinator?: boolean | UserDefaultArgs<ExtArgs>
     technician?: boolean | Ticket$technicianArgs<ExtArgs>
@@ -2580,6 +2604,7 @@ export namespace Prisma {
       title: string
       description: string
       department: $Enums.Department
+      priority: $Enums.Priority
       location: string
       deviceId: string
       status: $Enums.TicketStatus
@@ -3019,6 +3044,7 @@ export namespace Prisma {
     readonly title: FieldRef<"Ticket", 'String'>
     readonly description: FieldRef<"Ticket", 'String'>
     readonly department: FieldRef<"Ticket", 'Department'>
+    readonly priority: FieldRef<"Ticket", 'Priority'>
     readonly location: FieldRef<"Ticket", 'String'>
     readonly deviceId: FieldRef<"Ticket", 'String'>
     readonly status: FieldRef<"Ticket", 'TicketStatus'>
@@ -3500,6 +3526,7 @@ export namespace Prisma {
     title: 'title',
     description: 'description',
     department: 'department',
+    priority: 'priority',
     location: 'location',
     deviceId: 'deviceId',
     status: 'status',
@@ -3604,6 +3631,20 @@ export namespace Prisma {
    * Reference to a field of type 'DateTime[]'
    */
   export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Priority'
+   */
+  export type EnumPriorityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Priority'>
+    
+
+
+  /**
+   * Reference to a field of type 'Priority[]'
+   */
+  export type ListEnumPriorityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Priority[]'>
     
 
 
@@ -3744,6 +3785,7 @@ export namespace Prisma {
     title?: StringFilter<"Ticket"> | string
     description?: StringFilter<"Ticket"> | string
     department?: EnumDepartmentFilter<"Ticket"> | $Enums.Department
+    priority?: EnumPriorityFilter<"Ticket"> | $Enums.Priority
     location?: StringFilter<"Ticket"> | string
     deviceId?: StringFilter<"Ticket"> | string
     status?: EnumTicketStatusFilter<"Ticket"> | $Enums.TicketStatus
@@ -3763,6 +3805,7 @@ export namespace Prisma {
     title?: SortOrder
     description?: SortOrder
     department?: SortOrder
+    priority?: SortOrder
     location?: SortOrder
     deviceId?: SortOrder
     status?: SortOrder
@@ -3785,6 +3828,7 @@ export namespace Prisma {
     title?: StringFilter<"Ticket"> | string
     description?: StringFilter<"Ticket"> | string
     department?: EnumDepartmentFilter<"Ticket"> | $Enums.Department
+    priority?: EnumPriorityFilter<"Ticket"> | $Enums.Priority
     location?: StringFilter<"Ticket"> | string
     deviceId?: StringFilter<"Ticket"> | string
     status?: EnumTicketStatusFilter<"Ticket"> | $Enums.TicketStatus
@@ -3804,6 +3848,7 @@ export namespace Prisma {
     title?: SortOrder
     description?: SortOrder
     department?: SortOrder
+    priority?: SortOrder
     location?: SortOrder
     deviceId?: SortOrder
     status?: SortOrder
@@ -3827,6 +3872,7 @@ export namespace Prisma {
     title?: StringWithAggregatesFilter<"Ticket"> | string
     description?: StringWithAggregatesFilter<"Ticket"> | string
     department?: EnumDepartmentWithAggregatesFilter<"Ticket"> | $Enums.Department
+    priority?: EnumPriorityWithAggregatesFilter<"Ticket"> | $Enums.Priority
     location?: StringWithAggregatesFilter<"Ticket"> | string
     deviceId?: StringWithAggregatesFilter<"Ticket"> | string
     status?: EnumTicketStatusWithAggregatesFilter<"Ticket"> | $Enums.TicketStatus
@@ -3964,6 +4010,7 @@ export namespace Prisma {
     title: string
     description: string
     department: $Enums.Department
+    priority?: $Enums.Priority
     location: string
     deviceId: string
     status?: $Enums.TicketStatus
@@ -3981,6 +4028,7 @@ export namespace Prisma {
     title: string
     description: string
     department: $Enums.Department
+    priority?: $Enums.Priority
     location: string
     deviceId: string
     status?: $Enums.TicketStatus
@@ -3998,6 +4046,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     department?: EnumDepartmentFieldUpdateOperationsInput | $Enums.Department
+    priority?: EnumPriorityFieldUpdateOperationsInput | $Enums.Priority
     location?: StringFieldUpdateOperationsInput | string
     deviceId?: StringFieldUpdateOperationsInput | string
     status?: EnumTicketStatusFieldUpdateOperationsInput | $Enums.TicketStatus
@@ -4015,6 +4064,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     department?: EnumDepartmentFieldUpdateOperationsInput | $Enums.Department
+    priority?: EnumPriorityFieldUpdateOperationsInput | $Enums.Priority
     location?: StringFieldUpdateOperationsInput | string
     deviceId?: StringFieldUpdateOperationsInput | string
     status?: EnumTicketStatusFieldUpdateOperationsInput | $Enums.TicketStatus
@@ -4032,6 +4082,7 @@ export namespace Prisma {
     title: string
     description: string
     department: $Enums.Department
+    priority?: $Enums.Priority
     location: string
     deviceId: string
     status?: $Enums.TicketStatus
@@ -4049,6 +4100,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     department?: EnumDepartmentFieldUpdateOperationsInput | $Enums.Department
+    priority?: EnumPriorityFieldUpdateOperationsInput | $Enums.Priority
     location?: StringFieldUpdateOperationsInput | string
     deviceId?: StringFieldUpdateOperationsInput | string
     status?: EnumTicketStatusFieldUpdateOperationsInput | $Enums.TicketStatus
@@ -4064,6 +4116,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     department?: EnumDepartmentFieldUpdateOperationsInput | $Enums.Department
+    priority?: EnumPriorityFieldUpdateOperationsInput | $Enums.Priority
     location?: StringFieldUpdateOperationsInput | string
     deviceId?: StringFieldUpdateOperationsInput | string
     status?: EnumTicketStatusFieldUpdateOperationsInput | $Enums.TicketStatus
@@ -4309,6 +4362,13 @@ export namespace Prisma {
     not?: NestedEnumDepartmentFilter<$PrismaModel> | $Enums.Department
   }
 
+  export type EnumPriorityFilter<$PrismaModel = never> = {
+    equals?: $Enums.Priority | EnumPriorityFieldRefInput<$PrismaModel>
+    in?: $Enums.Priority[] | ListEnumPriorityFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Priority[] | ListEnumPriorityFieldRefInput<$PrismaModel>
+    not?: NestedEnumPriorityFilter<$PrismaModel> | $Enums.Priority
+  }
+
   export type EnumTicketStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.TicketStatus | EnumTicketStatusFieldRefInput<$PrismaModel>
     in?: $Enums.TicketStatus[] | ListEnumTicketStatusFieldRefInput<$PrismaModel>
@@ -4331,6 +4391,7 @@ export namespace Prisma {
     title?: SortOrder
     description?: SortOrder
     department?: SortOrder
+    priority?: SortOrder
     location?: SortOrder
     deviceId?: SortOrder
     status?: SortOrder
@@ -4348,6 +4409,7 @@ export namespace Prisma {
     title?: SortOrder
     description?: SortOrder
     department?: SortOrder
+    priority?: SortOrder
     location?: SortOrder
     deviceId?: SortOrder
     status?: SortOrder
@@ -4365,6 +4427,7 @@ export namespace Prisma {
     title?: SortOrder
     description?: SortOrder
     department?: SortOrder
+    priority?: SortOrder
     location?: SortOrder
     deviceId?: SortOrder
     status?: SortOrder
@@ -4385,6 +4448,16 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumDepartmentFilter<$PrismaModel>
     _max?: NestedEnumDepartmentFilter<$PrismaModel>
+  }
+
+  export type EnumPriorityWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.Priority | EnumPriorityFieldRefInput<$PrismaModel>
+    in?: $Enums.Priority[] | ListEnumPriorityFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Priority[] | ListEnumPriorityFieldRefInput<$PrismaModel>
+    not?: NestedEnumPriorityWithAggregatesFilter<$PrismaModel> | $Enums.Priority
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPriorityFilter<$PrismaModel>
+    _max?: NestedEnumPriorityFilter<$PrismaModel>
   }
 
   export type EnumTicketStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -4523,6 +4596,10 @@ export namespace Prisma {
 
   export type EnumDepartmentFieldUpdateOperationsInput = {
     set?: $Enums.Department
+  }
+
+  export type EnumPriorityFieldUpdateOperationsInput = {
+    set?: $Enums.Priority
   }
 
   export type EnumTicketStatusFieldUpdateOperationsInput = {
@@ -4735,6 +4812,13 @@ export namespace Prisma {
     not?: NestedEnumDepartmentFilter<$PrismaModel> | $Enums.Department
   }
 
+  export type NestedEnumPriorityFilter<$PrismaModel = never> = {
+    equals?: $Enums.Priority | EnumPriorityFieldRefInput<$PrismaModel>
+    in?: $Enums.Priority[] | ListEnumPriorityFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Priority[] | ListEnumPriorityFieldRefInput<$PrismaModel>
+    not?: NestedEnumPriorityFilter<$PrismaModel> | $Enums.Priority
+  }
+
   export type NestedEnumTicketStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.TicketStatus | EnumTicketStatusFieldRefInput<$PrismaModel>
     in?: $Enums.TicketStatus[] | ListEnumTicketStatusFieldRefInput<$PrismaModel>
@@ -4752,6 +4836,16 @@ export namespace Prisma {
     _max?: NestedEnumDepartmentFilter<$PrismaModel>
   }
 
+  export type NestedEnumPriorityWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.Priority | EnumPriorityFieldRefInput<$PrismaModel>
+    in?: $Enums.Priority[] | ListEnumPriorityFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Priority[] | ListEnumPriorityFieldRefInput<$PrismaModel>
+    not?: NestedEnumPriorityWithAggregatesFilter<$PrismaModel> | $Enums.Priority
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPriorityFilter<$PrismaModel>
+    _max?: NestedEnumPriorityFilter<$PrismaModel>
+  }
+
   export type NestedEnumTicketStatusWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.TicketStatus | EnumTicketStatusFieldRefInput<$PrismaModel>
     in?: $Enums.TicketStatus[] | ListEnumTicketStatusFieldRefInput<$PrismaModel>
@@ -4767,6 +4861,7 @@ export namespace Prisma {
     title: string
     description: string
     department: $Enums.Department
+    priority?: $Enums.Priority
     location: string
     deviceId: string
     status?: $Enums.TicketStatus
@@ -4783,6 +4878,7 @@ export namespace Prisma {
     title: string
     description: string
     department: $Enums.Department
+    priority?: $Enums.Priority
     location: string
     deviceId: string
     status?: $Enums.TicketStatus
@@ -4809,6 +4905,7 @@ export namespace Prisma {
     title: string
     description: string
     department: $Enums.Department
+    priority?: $Enums.Priority
     location: string
     deviceId: string
     status?: $Enums.TicketStatus
@@ -4825,6 +4922,7 @@ export namespace Prisma {
     title: string
     description: string
     department: $Enums.Department
+    priority?: $Enums.Priority
     location: string
     deviceId: string
     status?: $Enums.TicketStatus
@@ -4870,6 +4968,7 @@ export namespace Prisma {
     title?: StringFilter<"Ticket"> | string
     description?: StringFilter<"Ticket"> | string
     department?: EnumDepartmentFilter<"Ticket"> | $Enums.Department
+    priority?: EnumPriorityFilter<"Ticket"> | $Enums.Priority
     location?: StringFilter<"Ticket"> | string
     deviceId?: StringFilter<"Ticket"> | string
     status?: EnumTicketStatusFilter<"Ticket"> | $Enums.TicketStatus
@@ -5071,6 +5170,7 @@ export namespace Prisma {
     title: string
     description: string
     department: $Enums.Department
+    priority?: $Enums.Priority
     location: string
     deviceId: string
     status?: $Enums.TicketStatus
@@ -5087,6 +5187,7 @@ export namespace Prisma {
     title: string
     description: string
     department: $Enums.Department
+    priority?: $Enums.Priority
     location: string
     deviceId: string
     status?: $Enums.TicketStatus
@@ -5103,6 +5204,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     department?: EnumDepartmentFieldUpdateOperationsInput | $Enums.Department
+    priority?: EnumPriorityFieldUpdateOperationsInput | $Enums.Priority
     location?: StringFieldUpdateOperationsInput | string
     deviceId?: StringFieldUpdateOperationsInput | string
     status?: EnumTicketStatusFieldUpdateOperationsInput | $Enums.TicketStatus
@@ -5119,6 +5221,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     department?: EnumDepartmentFieldUpdateOperationsInput | $Enums.Department
+    priority?: EnumPriorityFieldUpdateOperationsInput | $Enums.Priority
     location?: StringFieldUpdateOperationsInput | string
     deviceId?: StringFieldUpdateOperationsInput | string
     status?: EnumTicketStatusFieldUpdateOperationsInput | $Enums.TicketStatus
@@ -5135,6 +5238,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     department?: EnumDepartmentFieldUpdateOperationsInput | $Enums.Department
+    priority?: EnumPriorityFieldUpdateOperationsInput | $Enums.Priority
     location?: StringFieldUpdateOperationsInput | string
     deviceId?: StringFieldUpdateOperationsInput | string
     status?: EnumTicketStatusFieldUpdateOperationsInput | $Enums.TicketStatus
@@ -5151,6 +5255,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     department?: EnumDepartmentFieldUpdateOperationsInput | $Enums.Department
+    priority?: EnumPriorityFieldUpdateOperationsInput | $Enums.Priority
     location?: StringFieldUpdateOperationsInput | string
     deviceId?: StringFieldUpdateOperationsInput | string
     status?: EnumTicketStatusFieldUpdateOperationsInput | $Enums.TicketStatus
@@ -5167,6 +5272,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     department?: EnumDepartmentFieldUpdateOperationsInput | $Enums.Department
+    priority?: EnumPriorityFieldUpdateOperationsInput | $Enums.Priority
     location?: StringFieldUpdateOperationsInput | string
     deviceId?: StringFieldUpdateOperationsInput | string
     status?: EnumTicketStatusFieldUpdateOperationsInput | $Enums.TicketStatus
@@ -5183,6 +5289,7 @@ export namespace Prisma {
     title?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
     department?: EnumDepartmentFieldUpdateOperationsInput | $Enums.Department
+    priority?: EnumPriorityFieldUpdateOperationsInput | $Enums.Priority
     location?: StringFieldUpdateOperationsInput | string
     deviceId?: StringFieldUpdateOperationsInput | string
     status?: EnumTicketStatusFieldUpdateOperationsInput | $Enums.TicketStatus

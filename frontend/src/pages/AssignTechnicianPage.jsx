@@ -202,7 +202,14 @@ const AssignTechnicianPage = () => {
         ) : (
           <DataTable
             columns={[
-              { header: "Title", field: "title", sortable: true },
+              {
+                header: "Title",
+                field: "title",
+                sortable: true,
+                render: (row) => (
+                  <div className="max-w-[125px] truncate" title={row.title}>{row.title}</div>
+                ),
+              },
               { header: "Department", field: "department", sortable: true },
               { header: "Location", field: "location", sortable: true },
               { header: "Device ID", field: "deviceId", sortable: true },
