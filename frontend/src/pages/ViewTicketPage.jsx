@@ -60,6 +60,20 @@ const getStatusChipProps = (status) => {
   }
 };
 
+const getPriorityChipProps = (priority) => {
+  const normalized = (priority || '').toUpperCase();
+  switch (normalized) {
+    case 'LOW':
+      return { label: 'LOW', sx: { bgcolor: '#dcfce7', color: '#15803d', fontWeight: 700, fontSize: 12, borderRadius: '12px', border: '1px solid #bbf7d0' } };
+    case 'MEDIUM':
+      return { label: 'MEDIUM', sx: { bgcolor: '#fef9c3', color: '#b45309', fontWeight: 700, fontSize: 12, borderRadius: '12px', border: '1px solid #fde68a' } };
+    case 'HIGH':
+      return { label: 'HIGH', sx: { bgcolor: '#fee2e2', color: '#b91c1c', fontWeight: 700, fontSize: 12, borderRadius: '12px', border: '1px solid #fecaca' } };
+    default:
+      return { label: priority, sx: { fontWeight: 600, fontSize: 13, borderRadius: 9999 } };
+  }
+};
+
 const GlassCard = styled(Box)(({ theme }) => ({
   background: 'rgba(255, 255, 255, 0.95)',
   backdropFilter: 'blur(20px)',
@@ -241,10 +255,19 @@ const ViewTicketPage = () => {
   };
 
   const columns = [
-    { header: "Title", field: "title", sortable: true },
-    { header: "Department", field: "department", sortable: true },
+    { header: "Title", field: "title", sortable: true,
+      render: (row) => (
+        <div className="max-w-[125px] truncate" title={row.title}>{row.title}</div>
+      ),
+     },
     { header: "Location", field: "location", sortable: true },
     { header: "Device ID", field: "deviceId", sortable: true },
+    {
+      header: "Priority",
+      field: "priority",
+      sortable: true,
+      render: (row) => <Chip {...getPriorityChipProps(row.priority)} size="small" />,
+    },
     {
       header: "Status",
       field: "status",
@@ -300,9 +323,9 @@ const ViewTicketPage = () => {
         description="Here are the tickets you have raised"
       />
       <Card className="overflow-x-auto">
-        {loading ? (
-          <div className="text-center py-8">Loading tickets...</div>
-        ) : fetchError ? (
+            {loading ? (
+              <div className="text-center py-8">Loading tickets...</div>
+            ) : fetchError ? (
           <div className="text-center py-8 text-red-500">{fetchError}</div>
         ) : (
           <DataTable columns={columns} data={tickets} />
@@ -524,10 +547,10 @@ const ViewTicketPage = () => {
                     style={{ marginTop: '24px', display: 'flex', justifyContent: 'flex-end', gap: '12px' }}
                   >
                     <StyledButton
-                      onClick={() => setSelectedTicket(null)}
+                onClick={() => setSelectedTicket(null)}
                       variant="outlined"
-                    >
-                      Close
+              >
+                Close
                     </StyledButton>
                   </motion.div>
                 </Box>
@@ -539,7 +562,7 @@ const ViewTicketPage = () => {
 
       {/* Enhanced Confirmation Modal */}
       <AnimatePresence>
-        {ticketToClose && (
+      {ticketToClose && (
           <motion.div
             initial="hidden"
             animate="visible"
@@ -551,7 +574,7 @@ const ViewTicketPage = () => {
               backdropFilter: 'blur(12px)',
               zIndex: 9999
             }}
-            onClick={() => setTicketToClose(null)}
+                onClick={() => setTicketToClose(null)}
           >
             <motion.div
               variants={modalVariants}
@@ -642,11 +665,11 @@ const ViewTicketPage = () => {
                       onClick={() => setTicketToClose(null)}
                       variant="outlined"
                       disabled={updatingTicketId === ticketToClose?.id}
-                    >
-                      Cancel
+              >
+                Cancel
                     </StyledButton>
                     <StyledButton
-                      onClick={confirmMarkAsClosed}
+                onClick={confirmMarkAsClosed}
                       variant="contained"
                       disabled={updatingTicketId === ticketToClose?.id}
                       sx={{

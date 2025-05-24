@@ -17,6 +17,7 @@ import ProtectedRoute from "./store/ProtectedRoute";
 // Pages for Coordinator
 import CreateTicketPage from "./pages/CreateTicketPage";
 import ViewTicketPage from "./pages/ViewTicketPage";
+import CoordinatorDashboard from "./pages/CoordinatorDashboard";
 
 // Pages for Admin
 import AdminDashboard from "./pages/AdminDashboard";
@@ -52,13 +53,13 @@ const App = () => {
         {/* Public Routes */}
         <Route path="/login" element={authUser ? <Navigate to={
           authUser.role === "ADMIN" ? "/admin/dashboard" :
-          authUser.role === "COORDINATOR" ? "/coordinator/tickets" :
+          authUser.role === "COORDINATOR" ? "/coordinator/dashboard" :
           authUser.role === "TECHNICIAN" ? "/technician/tickets" :
           "/"
         } replace /> : <LoginPage />} />
         <Route path="/signup" element={authUser ? <Navigate to={
           authUser.role === "ADMIN" ? "/admin/dashboard" :
-          authUser.role === "COORDINATOR" ? "/coordinator/tickets" :
+          authUser.role === "COORDINATOR" ? "/coordinator/dashboard" :
           authUser.role === "TECHNICIAN" ? "/technician/tickets" :
           "/"
         } replace /> : <SignUpPage />} />
@@ -67,7 +68,7 @@ const App = () => {
         <Route path="/" element={<Navigate to={
           authUser ? (
             authUser.role === "ADMIN" ? "/admin/dashboard" :
-            authUser.role === "COORDINATOR" ? "/coordinator/tickets" :
+            authUser.role === "COORDINATOR" ? "/coordinator/dashboard" :
             authUser.role === "TECHNICIAN" ? "/technician/tickets" :
             "/login"
           ) : "/login"
@@ -101,7 +102,8 @@ const App = () => {
             </ProtectedRoute>
           }
         >
-          <Route index element={<CreateTicketPage />} />
+          <Route index element={<CoordinatorDashboard />} />
+          <Route path="dashboard" element={<CoordinatorDashboard />} />
           <Route path="create-ticket" element={<CreateTicketPage />} />
           <Route path="tickets" element={<ViewTicketPage />} />
         </Route>

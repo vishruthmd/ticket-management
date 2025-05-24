@@ -3,11 +3,13 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useLocation } from 'react-router-dom';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import ListAltIcon from '@mui/icons-material/ListAlt';
+import HomeFilledIcon from '@mui/icons-material/HomeFilled';
 import logo from '../assets/logo.png';
 
 const drawerWidth = 260;
 
 const navItems = [
+  { text: 'Dashboard', icon: <HomeFilledIcon />, path: '/coordinator/dashboard' },
   { text: 'Create Ticket', icon: <AddCircleIcon />, path: '/coordinator/create-ticket' },
   { text: 'View Tickets', icon: <ListAltIcon />, path: '/coordinator/tickets' },
 ];

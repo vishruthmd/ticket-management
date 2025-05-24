@@ -34,6 +34,21 @@ const getStatusChipProps = (status) => {
   }
 };
 
+// Priority chip styling helper
+const getPriorityChipProps = (priority) => {
+  const normalized = (priority || '').toUpperCase();
+  switch (normalized) {
+    case 'LOW':
+      return { label: 'LOW', sx: { bgcolor: '#dcfce7', color: '#15803d', fontWeight: 700, fontSize: 12, borderRadius: '12px', border: '1px solid #bbf7d0' } };
+    case 'MEDIUM':
+      return { label: 'MEDIUM', sx: { bgcolor: '#fef9c3', color: '#b45309', fontWeight: 700, fontSize: 12, borderRadius: '12px', border: '1px solid #fde68a' } };
+    case 'HIGH':
+      return { label: 'HIGH', sx: { bgcolor: '#fee2e2', color: '#b91c1c', fontWeight: 700, fontSize: 12, borderRadius: '12px', border: '1px solid #fecaca' } };
+    default:
+      return { label: priority, sx: { fontWeight: 600, fontSize: 13, borderRadius: 9999 } };
+  }
+};
+
 // Styled components from ViewTicketPage.jsx
 const GlassCard = styled(Box)(({ theme }) => ({
   background: 'rgba(255, 255, 255, 0.95)',
@@ -160,19 +175,24 @@ const ViewTicketsTechnician = () => {
   const columns = [
     { header: "Title", field: "title", sortable: true },
     { header: "Department", field: "department", sortable: true },
-    { header: "Location", field: "location", sortable: true },
+    {
+      header: "Location",
+      field: "location",
+      sortable: true,
+      render: (row) => (row.location || '').toUpperCase(),
+    },
     { header: "Device ID", field: "deviceId", sortable: true },
+    {
+      header: "Priority",
+      field: "priority",
+      sortable: true,
+      render: (row) => <Chip {...getPriorityChipProps(row.priority)} size="small" />,
+    },
     {
       header: "Status",
       field: "status",
       sortable: true,
       render: (row) => <Chip {...getStatusChipProps(row.status)} size="small" />,
-    },
-    {
-      header: "Coordinator",
-      field: "coordinator",
-      sortable: true, // Coordinator name can be sorted
-      render: (row) => row.coordinator?.name || "Unknown",
     },
     {
       header: "Last Updated",
@@ -195,12 +215,11 @@ const ViewTicketsTechnician = () => {
           >
             View
           </Button>
-          {/* Add Mark as Closed button here later if needed, similar to ViewTicketPage */}
         </Box>
       ),
     },
   ];
-
+  
   return (
     <React.Fragment> {/* Changed to React.Fragment as top-level wrapper is LayoutTechnician */}
       <PageHeader 
@@ -208,9 +227,9 @@ const ViewTicketsTechnician = () => {
         description="Tickets currently assigned to you"
       />
       <Card sx={{ mt: 3 }}> {/* Added margin top */} 
-        {loading ? (
+            {loading ? (
           <Typography sx={{ textAlign: 'center', py: 8 }}>Loading tickets...</Typography>
-        ) : fetchError ? (
+            ) : fetchError ? (
           <Typography color="error" sx={{ textAlign: 'center', py: 8 }}>{fetchError}</Typography>
         ) : (
           <DataTable columns={columns} data={tickets} />
@@ -218,7 +237,7 @@ const ViewTicketsTechnician = () => {
       </Card>
 
       <AnimatePresence>
-        {selectedTicket && (
+      {selectedTicket && (
           <motion.div
             initial="hidden"
             animate="visible"
@@ -230,7 +249,7 @@ const ViewTicketsTechnician = () => {
               backdropFilter: 'blur(12px)',
               zIndex: 9999
             }}
-            onClick={() => setSelectedTicket(null)}
+              onClick={() => setSelectedTicket(null)}
           >
             <motion.div
               variants={modalVariants}
@@ -332,7 +351,7 @@ const ViewTicketsTechnician = () => {
                         overflowY: 'auto', 
                         boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.03)'
                       }}>
-                        {selectedTicket.description || "No description provided."}
+                {selectedTicket.description || "No description provided."}
                       </Box>
                     </motion.div>
                   )}
@@ -406,10 +425,10 @@ const ViewTicketsTechnician = () => {
                     style={{ marginTop: '20px', display: 'flex', justifyContent: 'flex-end', gap: '10px' }}
                   >
                     <StyledButton
-                      onClick={() => setSelectedTicket(null)}
+                onClick={() => setSelectedTicket(null)}
                       variant="outlined"
-                    >
-                      Close
+              >
+                Close
                     </StyledButton>
                   </motion.div>
                 </Box>
