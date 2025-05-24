@@ -12,11 +12,11 @@ import {
   DEPARTMENTS,
   departmentOptions,
 } from "../../../backend/src/libs/constants.js";
-import { Combobox, ComboboxInput, ComboboxButton, ComboboxOptions, ComboboxOption } from "@headlessui/react";
+import { Combobox } from "@headlessui/react";
 
 // ✅ Zod schema
 const SignUpSchema = z
-  .object({ 
+  .object({
     email: z.string().email("Enter a valid email"),
     password: z.string().min(6, "Password must be at least 6 characters"),
     name: z.string().min(3, "Name must be at least 3 characters"),
@@ -77,7 +77,7 @@ const CreateUserPage = () => {
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Code className="h-5 w-5 text-base-content/40 text-gray-500" />
+                  <Code className="h-5 w-5 text-base-content/40" />
                 </div>
                 <input
                   type="text"
@@ -97,7 +97,7 @@ const CreateUserPage = () => {
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Code className="h-5 w-5 text-base-content/40 text-gray-500" />
+                  <Code className="h-5 w-5 text-base-content/40" />
                 </div>
                 <select
                   {...register("role")}
@@ -124,21 +124,21 @@ const CreateUserPage = () => {
                 >
                   <div className="relative">
                     <div className="relative w-full cursor-default bg-white border border-gray-300 rounded-md">
-                      <ComboboxInput
+                      <Combobox.Input
                         className="w-full bg-white text-gray-900 placeholder-gray-400 focus:outline-none py-2 px-3 rounded-md"
                         placeholder="Select Department"
                         displayValue={(option) => option?.label || ""}
                         onChange={(event) => setQuery(event.target.value)}
                       />
-                      <ComboboxButton className="absolute inset-y-0 right-0 flex items-center pr-2">
+                      <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
                         <ChevronDown className="h-4 w-4 text-gray-500" />
-                      </ComboboxButton>
+                      </Combobox.Button>
                     </div>
-                    <ComboboxOptions className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-sm shadow-lg ring-1 ring-black/5 focus:outline-none border border-gray-200">
+                    <Combobox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-sm shadow-lg ring-1 ring-black/5 focus:outline-none border border-gray-200">
                       {departmentOptions
                         .filter((option) => option.label.toLowerCase().includes(query.toLowerCase()))
                         .map((option) => (
-                          <ComboboxOption
+                          <Combobox.Option
                             key={option.value}
                             value={option}
                             className={({ active, selected }) =>
@@ -157,9 +157,9 @@ const CreateUserPage = () => {
                                 )}
                               </>
                             )}
-                          </ComboboxOption>
+                          </Combobox.Option>
                         ))}
-                    </ComboboxOptions>
+                    </Combobox.Options>
                   </div>
                 </Combobox>
                 {errors.department && (
@@ -174,7 +174,7 @@ const CreateUserPage = () => {
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Mail className="h-5 w-5 text-base-content/40 text-gray-500" />
+                  <Mail className="h-5 w-5 text-base-content/40" />
                 </div>
                 <input
                   type="email"

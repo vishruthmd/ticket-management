@@ -1,6 +1,37 @@
 import React, { useEffect, useState } from "react";
+import PageHeader from "../components/ui/PageHeader";
+import Card from "../components/ui/Card";
+import DataTable from "../components/ui/DataTable";
+import { motion, AnimatePresence } from "framer-motion";
 import { axiosInstance } from "../libs/axios.libs.js";
-import NavbarAdmin from "../components/NavbarAdmin.jsx";
+import Dialog from "@mui/material/Dialog";
+import Button from "@mui/material/Button";
+import Divider from "@mui/material/Divider";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Chip from "@mui/material/Chip";
+import Paper from "@mui/material/Paper";
+import { FaTimes } from "react-icons/fa";
+
+const getStatusChipProps = (status) => {
+  const normalized = (status || "").toUpperCase();
+  switch (normalized) {
+    case "OPEN":
+      return { label: "OPEN", sx: { bgcolor: "#dbeafe", color: "#1d4ed8", fontWeight: 600, fontSize: 13, borderRadius: 9999 } };
+    case "IN_PROGRESS":
+      return { label: "IN PROGRESS", sx: { bgcolor: "#fef9c3", color: "#b45309", fontWeight: 600, fontSize: 13, borderRadius: 9999 } };
+    case "CLOSED":
+      return { label: "CLOSED", sx: { bgcolor: "#dcfce7", color: "#15803d", fontWeight: 600, fontSize: 13, borderRadius: 9999 } };
+    default:
+      return { label: status, sx: { fontWeight: 600, fontSize: 13, borderRadius: 9999 } };
+  }
+};
+
+const modalVariants = {
+  hidden: { opacity: 0, scale: 0.95, y: 40 },
+  visible: { opacity: 1, scale: 1, y: 0, transition: { duration: 0.25, ease: "easeOut" } },
+  exit: { opacity: 0, scale: 0.95, y: 40, transition: { duration: 0.2, ease: "easeIn" } },
+};
 
 const ViewTechniciansPage = () => {
   const [technicians, setTechnicians] = useState([]);
@@ -24,148 +55,130 @@ const ViewTechniciansPage = () => {
     fetchTechnicians();
   }, []);
 
+  const columns = [
+    { header: "Name", field: "name", sortable: true },
+    { header: "Email", field: "email", sortable: true },
+    {
+      header: "Total Tickets",
+      field: "totalTickets",
+      sortable: true,
+      render: (row) => row.technicianTickets.length,
+    },
+    {
+      header: "In Progress",
+      field: "inProgressCount",
+      sortable: true,
+      render: (row) => row.technicianTickets.filter((t) => t.status === "IN_PROGRESS").length,
+    },
+    {
+      header: "Closed",
+      field: "closedCount",
+      sortable: true,
+      render: (row) => row.technicianTickets.filter((t) => t.status === "CLOSED").length,
+    },
+    {
+      header: "Actions",
+      field: "actions",
+      sortable: false,
+      render: (row) => (
+        <Button
+          variant="outlined"
+          color="primary"
+          size="small"
+          onClick={() => setSelectedTechnician(row)}
+          sx={{ borderRadius: 2, fontWeight: 600 }}
+        >
+          View
+        </Button>
+      ),
+    },
+  ];
+
   return (
-    <div className="min-h-screen w-full">
-      <div className="max-w-screen-2xl mx-auto px-4 py-8">
-        <div className="card bg-base-100 shadow-xl">
-          <NavbarAdmin />
-          <div className="card-body">
-            <div className="text-center mb-6">
-              <h1 className="text-4xl font-bold text-primary pt-18">
-                Technicians
-              </h1>
-              <p className="text-sm text-gray-500 mt-2">
-                List of registered technicians and their tickets
-              </p>
-            </div>
-
-            {loading ? (
-              <div className="text-center py-8">Loading technicians...</div>
-            ) : fetchError ? (
-              <div role="alert" className="alert alert-error mb-6">
-                <span>{fetchError}</span>
-              </div>
-            ) : technicians.length === 0 ? (
-              <div className="text-center py-8 text-gray-500">
-                No technicians found.
-              </div>
-            ) : (
-              <div className="overflow-x-auto w-full">
-                <table className="table w-full table-zebra">
-                  <thead>
-                    <tr>
-                      <th>Name</th>
-                      <th>Email</th>
-                      <th>Total Tickets</th>
-                      <th>In Progress</th>
-                      <th>Closed</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {technicians.map((tech) => {
-                      const inProgressCount = tech.technicianTickets.filter(
-                        (t) => t.status === "IN_PROGRESS"
-                      ).length;
-                      const closedCount = tech.technicianTickets.filter(
-                        (t) => t.status === "CLOSED"
-                      ).length;
-
-                      return (
-                        <tr key={tech.id}>
-                          <td>{tech.name}</td>
-                          <td>{tech.email}</td>
-                          <td>{tech.technicianTickets.length}</td>
-                          <td>{inProgressCount}</td>
-                          <td>{closedCount}</td>
-                          <td>
-                            <button
-                              onClick={() => setSelectedTechnician(tech)}
-                              className="btn btn-sm btn-outline btn-primary"
-                            >
-                              View
-                            </button>
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* Technician Ticket Modal */}
-      {selectedTechnician && (
-        <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
-          <div className="bg-gray-900 text-white w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-lg shadow-lg p-6 relative">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-semibold text-white">
-                Tickets for {selectedTechnician.name}
-              </h2>
-              <button
-                className="text-white hover:text-red-400 text-xl"
-                onClick={() => setSelectedTechnician(null)}
-                aria-label="Close modal"
-              >
-                ✕
-              </button>
-            </div>
-
-            {selectedTechnician.technicianTickets.length > 0 ? (
-              <div className="overflow-x-auto">
-                <table className="table table-zebra w-full text-white">
-                  <thead>
-                    <tr>
-                      <th>Title</th>
-                      <th>Department</th>
-                      <th>Status</th>
-                      <th>Updated</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {selectedTechnician.technicianTickets.map((ticket) => (
-                      <tr key={ticket.id}>
-                        <td>{ticket.title}</td>
-                        <td>{ticket.department}</td>
-                        <td>
-                          <span
-                            className={`badge ${
-                              ticket.status === "OPEN"
-                                ? "badge-warning"
-                                : ticket.status === "IN_PROGRESS"
-                                ? "badge-info"
-                                : "badge-success"
-                            }`}
-                          >
-                            {ticket.status.replace("_", " ")}
-                          </span>
-                        </td>
-                        <td>{new Date(ticket.updatedAt).toLocaleString()}</td>
+    <div>
+      <PageHeader
+        title="Technicians"
+        description="List of registered technicians and their tickets"
+      />
+      <Card className="overflow-x-auto">
+        {loading ? (
+          <div className="text-center py-8">Loading technicians...</div>
+        ) : fetchError ? (
+          <div className="text-center py-8 text-red-500">{fetchError}</div>
+        ) : (
+          <DataTable columns={columns} data={technicians} />
+        )}
+      </Card>
+      <AnimatePresence>
+        {selectedTechnician && (
+          <Dialog
+            open={!!selectedTechnician}
+            onClose={() => setSelectedTechnician(null)}
+            maxWidth="md"
+            fullWidth
+            PaperProps={{
+              variants: modalVariants,
+              initial: "hidden",
+              animate: "visible",
+              exit: "exit",
+              className: "rounded-3xl",
+              style: { overflow: "visible", background: "rgba(255,255,255,0.98)", borderRadius: 32, boxShadow: "0 8px 40px rgba(0,0,0,0.10)" },
+            }}
+          >
+            <Paper elevation={0} sx={{ borderRadius: 6, p: { xs: 2, sm: 4 }, background: "transparent", boxShadow: "none" }}>
+              <Box display="flex" alignItems="center" justifyContent="space-between" mb={2}>
+                <Typography variant="h5" fontWeight={700} color="primary.main">
+                  Tickets for {selectedTechnician.name}
+                </Typography>
+                <Button onClick={() => setSelectedTechnician(null)} sx={{ minWidth: 0, p: 1, borderRadius: 2 }}>
+                  <FaTimes className="h-5 w-5 text-gray-500" />
+                </Button>
+              </Box>
+              <Divider sx={{ mb: 2 }} />
+              {selectedTechnician.technicianTickets.length > 0 ? (
+                <Box className="overflow-x-auto">
+                  <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Title</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Department</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Updated</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            ) : (
-              <p className="text-gray-400">
-                This technician has no tickets assigned.
-              </p>
-            )}
-
-            <div className="mt-4 text-right">
-              <button
-                onClick={() => setSelectedTechnician(null)}
-                className="btn btn-sm btn-outline btn-accent"
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                      {selectedTechnician.technicianTickets.map((ticket) => (
+                        <tr key={ticket.id}>
+                          <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">{ticket.title}</td>
+                          <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">{ticket.department}</td>
+                          <td className="px-4 py-3 whitespace-nowrap text-sm">
+                            <Chip {...getStatusChipProps(ticket.status)} size="small" />
+                          </td>
+                          <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">{new Date(ticket.updatedAt).toLocaleString()}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </Box>
+              ) : (
+                <Typography color="text.secondary" sx={{ mt: 2 }}>
+                  This technician has no tickets assigned.
+                </Typography>
+              )}
+              <Box mt={4} textAlign="right">
+                <Button
+                  onClick={() => setSelectedTechnician(null)}
+                  color="primary"
+                  variant="contained"
+                  sx={{ borderRadius: 2, fontWeight: 600 }}
+                >
+                  Close
+                </Button>
+              </Box>
+            </Paper>
+          </Dialog>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

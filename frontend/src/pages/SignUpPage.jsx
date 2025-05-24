@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import { Code, Eye, EyeOff, Loader2, Lock, Mail } from "lucide-react";
 import { useAuthStore } from "../store/useAuthStore.js";
 import NavbarAdmin from "../components/NavbarAdmin.jsx";
+import rvce from "../assets/rvce.png";
 
 // ✅ Zod schema
 const SignUpSchema = z.object({

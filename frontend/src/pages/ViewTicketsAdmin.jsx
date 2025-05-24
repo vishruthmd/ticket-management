@@ -1,6 +1,37 @@
 import React, { useEffect, useState } from "react";
+import PageHeader from "../components/ui/PageHeader";
+import Card from "../components/ui/Card";
+import DataTable from "../components/ui/DataTable";
 import { axiosInstance } from "../libs/axios.libs.js";
-import NavbarAdmin from "../components/NavbarAdmin.jsx";
+import { motion, AnimatePresence } from "framer-motion";
+import Dialog from "@mui/material/Dialog";
+import Button from "@mui/material/Button";
+import Divider from "@mui/material/Divider";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Chip from "@mui/material/Chip";
+import Paper from "@mui/material/Paper";
+import { FaTimes } from "react-icons/fa";
+
+const getStatusChipProps = (status) => {
+  const normalized = (status || "").toUpperCase();
+  switch (normalized) {
+    case "OPEN":
+      return { label: "OPEN", sx: { bgcolor: "#dbeafe", color: "#1d4ed8", fontWeight: 600, fontSize: 13, borderRadius: 9999 } };
+    case "IN_PROGRESS":
+      return { label: "IN PROGRESS", sx: { bgcolor: "#fef9c3", color: "#b45309", fontWeight: 600, fontSize: 13, borderRadius: 9999 } };
+    case "CLOSED":
+      return { label: "CLOSED", sx: { bgcolor: "#dcfce7", color: "#15803d", fontWeight: 600, fontSize: 13, borderRadius: 9999 } };
+    default:
+      return { label: status, sx: { fontWeight: 600, fontSize: 13, borderRadius: 9999 } };
+  }
+};
+
+const modalVariants = {
+  hidden: { opacity: 0, scale: 0.95, y: 40 },
+  visible: { opacity: 1, scale: 1, y: 0, transition: { duration: 0.25, ease: "easeOut" } },
+  exit: { opacity: 0, scale: 0.95, y: 40, transition: { duration: 0.2, ease: "easeIn" } },
+};
 
 const ViewTicketsAdmin = () => {
   const [tickets, setTickets] = useState([]);
@@ -20,166 +51,157 @@ const ViewTicketsAdmin = () => {
         setLoading(false);
       }
     };
-
     fetchTickets();
   }, []);
 
-  return (
-    <div className="min-h-screen w-full">
-      <NavbarAdmin />
-      <div className="max-w-screen-2xl mx-auto px-4 py-8">
-        <div className="card bg-base-100 shadow-xl">
-          <div className="card-body">
-            <div className="text-center mb-6">
-              <h1 className="text-4xl font-bold text-primary pt-18">
-                All Tickets
-              </h1>
-              <p className="text-sm text-gray-500 mt-2">
-                Admin view of all tickets
-              </p>
-            </div>
+  const columns = [
+    { header: "Title", field: "title", sortable: true },
+    { header: "Department", field: "department", sortable: true },
+    { header: "Location", field: "location", sortable: true },
+    { header: "Device ID", field: "deviceId", sortable: true },
+    {
+      header: "Status",
+      field: "status",
+      sortable: true,
+      render: (row) => <Chip {...getStatusChipProps(row.status)} size="small" />,
+    },
+    {
+      header: "Coordinator",
+      field: "coordinator",
+      sortable: false,
+      render: (row) => row.coordinator?.name || "N/A",
+    },
+    {
+      header: "Technician",
+      field: "technician",
+      sortable: false,
+      render: (row) => row.technician?.name || "Not Assigned",
+    },
+    {
+      header: "Last Updated",
+      field: "updatedAt",
+      sortable: true,
+      render: (row) => new Date(row.updatedAt).toLocaleString(),
+    },
+    {
+      header: "Actions",
+      field: "actions",
+      sortable: false,
+      render: (row) => (
+        <Button
+          variant="outlined"
+          color="primary"
+          size="small"
+          onClick={() => setSelectedTicket(row)}
+          sx={{ borderRadius: 2, fontWeight: 600 }}
+        >
+          View
+        </Button>
+      ),
+    },
+  ];
 
-            {loading ? (
-              <div className="text-center py-8">Loading tickets...</div>
-            ) : fetchError ? (
-              <div role="alert" className="alert alert-error mb-6">
-                <span>{fetchError}</span>
-              </div>
-            ) : tickets.length === 0 ? (
-              <div className="text-center py-8 text-gray-500">
-                No tickets found.
-              </div>
-            ) : (
-              <div className="overflow-x-auto w-full">
-                <table className="table w-full table-zebra">
-                  <thead>
+  return (
+    <div>
+      <PageHeader
+        title="All Tickets"
+        description="Admin view of all tickets"
+      />
+      <Card className="overflow-x-auto">
+        {loading ? (
+          <div className="text-center py-8">Loading tickets...</div>
+        ) : fetchError ? (
+          <div className="text-center py-8 text-red-500">{fetchError}</div>
+        ) : (
+          <DataTable columns={columns} data={tickets} />
+        )}
+      </Card>
+      <AnimatePresence>
+        {selectedTicket && (
+          <Dialog
+            open={!!selectedTicket}
+            onClose={() => setSelectedTicket(null)}
+            maxWidth="md"
+            fullWidth
+            PaperProps={{
+              variants: modalVariants,
+              initial: "hidden",
+              animate: "visible",
+              exit: "exit",
+              className: "rounded-3xl",
+              style: { overflow: "visible", background: "rgba(255,255,255,0.98)", borderRadius: 32, boxShadow: "0 8px 40px rgba(0,0,0,0.10)" },
+            }}
+          >
+            <Paper elevation={0} sx={{ borderRadius: 6, p: { xs: 2, sm: 4 }, background: "transparent", boxShadow: "none" }}>
+              <Box display="flex" alignItems="center" justifyContent="space-between" mb={2}>
+                <Typography variant="h5" fontWeight={700} color="primary.main">
+                  Ticket Details
+                </Typography>
+                <Button onClick={() => setSelectedTicket(null)} sx={{ minWidth: 0, p: 1, borderRadius: 2 }}>
+                  <FaTimes className="h-5 w-5 text-gray-500" />
+                </Button>
+              </Box>
+              <Divider sx={{ mb: 2 }} />
+              <Box mb={3}>
+                <Typography variant="subtitle1" fontWeight={600} gutterBottom>Description</Typography>
+                <Typography variant="body2" sx={{ bgcolor: '#f3f4f6', p: 2, borderRadius: 2, whiteSpace: 'pre-line' }}>
+                  {selectedTicket.description || "No description provided."}
+                </Typography>
+              </Box>
+              <Box className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50">
                     <tr>
-                      <th>Title</th>
-                      <th>Department</th>
-                      <th>Location</th>
-                      <th>Device ID</th>
-                      <th>Status</th>
-                      <th>Coordinator</th>
-                      <th>Technician</th>
-                      <th>Last Updated</th>
-                      <th>Actions</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Field</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Value</th>
                     </tr>
                   </thead>
-                  <tbody>
-                    {tickets.map((ticket) => (
-                      <tr key={ticket.id}>
-                        <td>{ticket.title}</td>
-                        <td>{ticket.department}</td>
-                        <td>{ticket.location}</td>
-                        <td>{ticket.deviceId}</td>
-                        <td>
-                          <span
-                            className={`badge ${
-                              ticket.status === "OPEN"
-                                ? "badge-warning"
-                                : ticket.status === "IN_PROGRESS"
-                                ? "badge-info"
-                                : "badge-success"
-                            }`}
-                          >
-                            {ticket.status.replace("_", " ")}
-                          </span>
-                        </td>
-                        <td>{ticket.coordinator?.name || "N/A"}</td>
-                        <td>{ticket.technician?.name || "Not Assigned"}</td>
-                        <td>{new Date(ticket.updatedAt).toLocaleString()}</td>
-                        <td>
-                          <button
-                            onClick={() => setSelectedTicket(ticket)}
-                            className="btn btn-sm btn-outline btn-primary"
-                          >
-                            View
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    <tr>
+                      <td className="px-4 py-3 font-medium">Title</td>
+                      <td className="px-4 py-3">{selectedTicket.title}</td>
+                    </tr>
+                    <tr>
+                      <td className="px-4 py-3 font-medium">Department</td>
+                      <td className="px-4 py-3">{selectedTicket.department}</td>
+                    </tr>
+                    <tr>
+                      <td className="px-4 py-3 font-medium">Location</td>
+                      <td className="px-4 py-3">{selectedTicket.location}</td>
+                    </tr>
+                    <tr>
+                      <td className="px-4 py-3 font-medium">Device ID</td>
+                      <td className="px-4 py-3">{selectedTicket.deviceId}</td>
+                    </tr>
+                    <tr>
+                      <td className="px-4 py-3 font-medium">Status</td>
+                      <td className="px-4 py-3"><Chip {...getStatusChipProps(selectedTicket.status)} size="small" /></td>
+                    </tr>
+                    <tr>
+                      <td className="px-4 py-3 font-medium">Coordinator</td>
+                      <td className="px-4 py-3">{selectedTicket.coordinator?.name || "N/A"}</td>
+                    </tr>
+                    <tr>
+                      <td className="px-4 py-3 font-medium">Technician</td>
+                      <td className="px-4 py-3">{selectedTicket.technician?.name || "Not Assigned"}</td>
+                    </tr>
                   </tbody>
                 </table>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* Modal for viewing ticket details */}
-      {selectedTicket && (
-        <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
-          <div className="bg-gray-900 text-white w-full max-w-2xl max-h-[85vh] overflow-y-auto rounded-lg shadow-lg p-6 relative">
-            <h2 className="text-2xl font-semibold text-primary mb-4">
-              Ticket Details
-            </h2>
-            <button
-              className="absolute top-3 right-3 text-gray-400 hover:text-red-400 text-xl"
-              onClick={() => setSelectedTicket(null)}
-              aria-label="Close modal"
-            >
-              ✕
-            </button>
-
-            <div className="mb-6">
-              <h3 className="text-lg font-semibold mb-2">Description</h3>
-              <p className="bg-base-200 p-4 rounded-lg text-sm whitespace-pre-line">
-                {selectedTicket.description || "No description provided."}
-              </p>
-            </div>
-
-            <div className="overflow-x-auto rounded-lg">
-              <table className="table w-full">
-                <thead>
-                  <tr>
-                    <th className="text-left text-sm uppercase text-gray-400">
-                      Field
-                    </th>
-                    <th className="text-left text-sm uppercase text-gray-400">
-                      Value
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr className="hover:bg-base-300">
-                    <td className="font-medium">Title</td>
-                    <td>{selectedTicket.title}</td>
-                  </tr>
-                  <tr className="hover:bg-base-300">
-                    <td className="font-medium">Department</td>
-                    <td>{selectedTicket.department}</td>
-                  </tr>
-                  <tr className="hover:bg-base-300">
-                    <td className="font-medium">Location</td>
-                    <td>{selectedTicket.location}</td>
-                  </tr>
-                  <tr className="hover:bg-base-300">
-                    <td className="font-medium">Status</td>
-                    <td>{selectedTicket.status.replace("_", " ")}</td>
-                  </tr>
-                  <tr className="hover:bg-base-300">
-                    <td className="font-medium">Coordinator</td>
-                    <td>{selectedTicket.coordinator?.name || "N/A"}</td>
-                  </tr>
-                  <tr className="hover:bg-base-300">
-                    <td className="font-medium">Technician</td>
-                    <td>{selectedTicket.technician?.name || "Not Assigned"}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-
-            <div className="mt-6 text-right">
-              <button
-                onClick={() => setSelectedTicket(null)}
-                className="btn btn-sm btn-primary"
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+              </Box>
+              <Box mt={4} textAlign="right">
+                <Button
+                  onClick={() => setSelectedTicket(null)}
+                  color="primary"
+                  variant="contained"
+                  sx={{ borderRadius: 2, fontWeight: 600 }}
+                >
+                  Close
+                </Button>
+              </Box>
+            </Paper>
+          </Dialog>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
