@@ -245,7 +245,7 @@ const AdminDashboard = () => {
                       <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-blue-600">{idx + 1}</td>
                       <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">{ticket.issue}</td>
                       <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">{ticket.department}</td>
-                      <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">{ticket.location}</td>
+                      <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">{ticket.location?.toUpperCase()}</td>
                       <td className="px-4 py-3 whitespace-nowrap text-sm">
                         <Chip {...getPriorityChipProps(ticket.priority)} size="small" />
                       </td>
@@ -277,7 +277,7 @@ const AdminDashboard = () => {
                     </div>
                     <div className="flex justify-between mt-1">
                       <span className="text-xs text-gray-500">{ticket.department}</span>
-                      <span className="text-xs text-gray-500">{ticket.location}</span>
+                      <span className="text-xs text-gray-500">{ticket.location?.toUpperCase()}</span>
                     </div>
                     <p className="mt-1 text-sm text-gray-900">{ticket.description?.slice(0, 80) || 'No description provided.'}</p>
                     <div className="mt-2 flex justify-between text-xs text-gray-500">
@@ -342,7 +342,7 @@ const AdminDashboard = () => {
                 </Grid>
                 <Grid item xs={12} sm={6}>
                   <Typography variant="subtitle2" color="text.secondary" gutterBottom>Location</Typography>
-                  <Typography variant="body1" color="text.primary">{selectedTicket.location}</Typography>
+                  <Typography variant="body1" color="text.primary">{selectedTicket.location?.toUpperCase()}</Typography>
                 </Grid>
                 <Grid item xs={12} sm={6}>
                   <Typography variant="subtitle2" color="text.secondary" gutterBottom>Priority</Typography>
@@ -477,7 +477,7 @@ const AdminDashboard = () => {
                       Location
                     </Typography>
                     <Typography variant="body1" color="text.primary">
-                      {assignModalTicket.location}
+                      {assignModalTicket.location?.toUpperCase()}
                     </Typography>
                   </Grid>
                   <Grid item xs={12} sm={6}>
