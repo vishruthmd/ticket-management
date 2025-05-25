@@ -14,6 +14,7 @@ import Paper from "@mui/material/Paper";
 import { FaTimes } from "react-icons/fa";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
+import dayjs from "dayjs";
 
 const getStatusChipProps = (status) => {
   const normalized = (status || "").toUpperCase();
@@ -135,7 +136,16 @@ const ViewTicketsAdmin = () => {
       header: "Last Updated",
       field: "updatedAt",
       sortable: true,
-      render: (row) => new Date(row.updatedAt).toLocaleString(),
+      render: (row) => (
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 0.2 }}>
+          <Typography variant="body2" sx={{ fontWeight: 500, color: '#1d4ed8', fontSize: 13 }}>
+            {dayjs(row.updatedAt).format('DD MMM YYYY')}
+          </Typography>
+          <Typography variant="caption" sx={{ color: '#64748b', fontSize: 11, letterSpacing: 0.2 }}>
+            {dayjs(row.updatedAt).format('hh:mm A')}
+          </Typography>
+        </Box>
+      ),
     },
     {
       header: "Actions",

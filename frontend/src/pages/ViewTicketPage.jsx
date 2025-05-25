@@ -14,6 +14,7 @@ import Avatar from "@mui/material/Avatar";
 import LinearProgress from "@mui/material/LinearProgress";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
+import dayjs from "dayjs";
 
 const getStatusChipProps = (status) => {
   const normalized = (status || "").toUpperCase();
@@ -336,7 +337,16 @@ const ViewTicketPage = () => {
       header: "Resolved At",
       field: "resolvedAt",
       sortable: true,
-      render: (row) => row.resolvedAt ? new Date(row.resolvedAt).toLocaleString() : "—",
+      render: (row) => row.resolvedAt ? (
+        <span style={{ display: 'flex', alignItems: 'center' }}>
+          <Typography variant="body2" sx={{ fontWeight: 500, color: '#1d4ed8', fontSize: 13 }}>
+            {dayjs(row.resolvedAt).format('DD MMM YYYY')}
+          </Typography>
+          <Typography variant="caption" sx={{ color: '#64748b', fontSize: 11, letterSpacing: 0.2, ml: 1 }}>
+            {dayjs(row.resolvedAt).format('hh:mm A')}
+          </Typography>
+        </span>
+      ) : "—",
     },
     {
       header: "Actions",
@@ -582,7 +592,7 @@ const ViewTicketPage = () => {
                       </HoverableDetailRow>
 
                       {selectedTicket.resolvedAt && (
-                        <DetailRow>
+                        <HoverableDetailRow>
                           <IconWrapper color="#EF4444">
                             <FaClock />
                           </IconWrapper>
@@ -590,11 +600,16 @@ const ViewTicketPage = () => {
                             <Typography variant="body2" sx={{ color: '#6B7280', fontSize: '12px', fontWeight: 500 }}>
                               RESOLVED AT
                             </Typography>
-                            <Typography variant="body1" fontWeight={600} sx={{ color: '#1F2937' }}>
-                              {new Date(selectedTicket.resolvedAt).toLocaleString()}
-                            </Typography>
+                            <span style={{ display: 'flex', alignItems: 'center' }}>
+                              <Typography variant="body1" fontWeight={600} sx={{ color: '#1F2937' }}>
+                                {dayjs(selectedTicket.resolvedAt).format('DD MMM YYYY')}
+                              </Typography>
+                              <Typography variant="caption" sx={{ color: '#64748b', fontSize: 11, letterSpacing: 0.2, ml: 1 }}>
+                                {dayjs(selectedTicket.resolvedAt).format('hh:mm A')}
+                              </Typography>
+                            </span>
                           </Box>
-                        </DetailRow>
+                        </HoverableDetailRow>
                       )}
                     </Box>
                   </motion.div>

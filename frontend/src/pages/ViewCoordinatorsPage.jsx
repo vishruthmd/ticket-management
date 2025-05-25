@@ -12,6 +12,7 @@ import Typography from "@mui/material/Typography";
 import Chip from "@mui/material/Chip";
 import Paper from "@mui/material/Paper";
 import { FaTimes } from "react-icons/fa";
+import dayjs from "dayjs";
 
 const getStatusChipProps = (status) => {
   const normalized = (status || "").toUpperCase();
@@ -181,7 +182,16 @@ const ViewCoordinatorsPage = () => {
                           <td className="px-4 py-3 whitespace-nowrap text-sm">
                             <Chip {...getStatusChipProps(ticket.status)} size="small" />
                           </td>
-                          <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">{new Date(ticket.updatedAt).toLocaleString()}</td>
+                          <td className="px-4 py-3 whitespace-nowrap text-sm">
+                            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 0.2 }}>
+                              <Typography variant="body2" sx={{ fontWeight: 500, color: '#1d4ed8', fontSize: 13 }}>
+                                {dayjs(ticket.updatedAt).format('DD MMM YYYY')}
+                              </Typography>
+                              <Typography variant="caption" sx={{ color: '#64748b', fontSize: 11, letterSpacing: 0.2 }}>
+                                {dayjs(ticket.updatedAt).format('hh:mm A')}
+                              </Typography>
+                            </Box>
+                          </td>
                         </tr>
                       ))}
                     </tbody>

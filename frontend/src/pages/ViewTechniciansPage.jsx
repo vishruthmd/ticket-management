@@ -12,6 +12,7 @@ import Typography from "@mui/material/Typography";
 import Chip from "@mui/material/Chip";
 import Paper from "@mui/material/Paper";
 import { FaTimes } from "react-icons/fa";
+import dayjs from "dayjs";
 
 const getStatusChipProps = (status) => {
   const normalized = (status || "").toUpperCase();
@@ -168,7 +169,7 @@ const ViewTechniciansPage = () => {
               </Box>
               <Divider sx={{ mb: 2 }} />
               {selectedTechnician.technicianTickets.length > 0 ? (
-                <Box className="overflow-x-auto">
+                <Box className="overflow-x-auto" sx={{ maxHeight: 400, overflowY: 'auto', borderRadius: 2, border: '1px solid #e5e7eb', boxShadow: '0 1px 4px rgba(0,0,0,0.03)' }}>
                   <table className="min-w-full divide-y divide-gray-200">
                     <thead className="bg-gray-50">
                       <tr>
@@ -186,7 +187,16 @@ const ViewTechniciansPage = () => {
                           <td className="px-4 py-3 whitespace-nowrap text-sm">
                             <Chip {...getStatusChipProps(ticket.status)} size="small" />
                           </td>
-                          <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">{new Date(ticket.updatedAt).toLocaleString()}</td>
+                          <td className="px-4 py-3 whitespace-nowrap text-sm">
+                            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 0.2 }}>
+                              <Typography variant="body2" sx={{ fontWeight: 500, color: '#1d4ed8', fontSize: 13 }}>
+                                {dayjs(ticket.updatedAt).format('DD MMM YYYY')}
+                              </Typography>
+                              <Typography variant="caption" sx={{ color: '#64748b', fontSize: 11, letterSpacing: 0.2 }}>
+                                {dayjs(ticket.updatedAt).format('hh:mm A')}
+                              </Typography>
+                            </Box>
+                          </td>
                         </tr>
                       ))}
                     </tbody>

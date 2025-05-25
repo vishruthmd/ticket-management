@@ -20,6 +20,7 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import { Toaster, toast } from 'react-hot-toast';
+import dayjs from 'dayjs';
 
 const statCardsConfig = [
   {
@@ -150,7 +151,7 @@ const AdminDashboard = () => {
               priority: t.priority || 'Low',
               status: t.status,
               assignedTo: t.technician?.name || 'Unassigned',
-              createdAt: new Date(t.createdAt).toLocaleString(),
+              createdAt: t.createdAt,
               department: t.department || '',
               location: t.location || '',
               description: t.description || '',
@@ -297,7 +298,14 @@ const AdminDashboard = () => {
                     </div>
                     <p className="mt-1 text-sm text-gray-900">{ticket.description?.slice(0, 80) || 'No description provided.'}</p>
                     <div className="mt-2 flex justify-between text-xs text-gray-500">
-                      <span>{ticket.createdAt}</span>
+                      <span style={{ display: 'flex', alignItems: 'center' }}>
+                        <Typography variant="body2" sx={{ fontWeight: 500, color: '#1d4ed8', fontSize: 13 }}>
+                          {dayjs(ticket.createdAt).format('DD MMM YYYY')}
+                        </Typography>
+                        <Typography variant="caption" sx={{ color: '#64748b', fontSize: 11, letterSpacing: 0.2, ml: 1 }}>
+                          {dayjs(ticket.createdAt).format('hh:mm A')}
+                        </Typography>
+                      </span>
                       <button
                         className="text-primary-600 font-semibold cursor-pointer transition-all duration-150 ease-in-out hover:scale-105 hover:text-blue-600"
                         onClick={() => {

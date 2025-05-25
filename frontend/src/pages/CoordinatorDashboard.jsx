@@ -15,6 +15,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
+import { styled } from '@mui/material/styles';
 
 const statCardsConfig = [
   {
@@ -79,6 +80,28 @@ const getPriorityChipProps = (priority) => {
       return { label: priority, sx: { fontWeight: 600, fontSize: 13, borderRadius: 9999 } };
   }
 };
+
+// Styled card for each ticket in the modal
+const TicketListCard = styled('li')(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  gap: '16px',
+  padding: '16px 18px',
+  marginBottom: '12px',
+  background: 'rgba(255,255,255,0.95)',
+  borderRadius: '12px',
+  borderLeft: '4px solid #3B82F6',
+  boxShadow: '0 2px 12px 0 rgba(59,130,246,0.06)',
+  transition: 'box-shadow 0.18s, background 0.18s, transform 0.18s, border 0.18s',
+  cursor: 'pointer',
+  border: '1.5px solid transparent',
+  '&:hover': {
+    background: 'rgba(59,130,246,0.07)',
+    boxShadow: '0 4px 16px 0 rgba(59,130,246,0.13)',
+    transform: 'scale(1.025)',
+    border: '1.5px solid #3B82F6',
+  },
+}));
 
 const CoordinatorDashboard = () => {
   const { authUser } = useAuthStore();
@@ -326,16 +349,35 @@ const CoordinatorDashboard = () => {
             </DialogTitle>
             <DialogContent sx={{ p: 3, maxHeight: '60vh' }}>
               {modalTickets.length > 0 ? (
-                <ul className="space-y-3">
+                <ul style={{ padding: 0, margin: 0, listStyle: 'none', marginTop: 16 }}>
                   {modalTickets.map(ticket => (
-                    <li 
-                      key={ticket.id} 
-                      className="py-2.5 px-3.5 rounded-lg bg-white/70 shadow-sm hover:bg-blue-50 hover:shadow-md transition-all duration-200 cursor-default"
-                    >
-                      <Typography variant="body1" sx={{ color: '#334155', fontWeight: 500 }}>
-                        {ticket.title}
-                      </Typography>
-                    </li>
+                    <TicketListCard key={ticket.id}>
+                      <Box flex={1}>
+                        <Box display="flex" alignItems="center" justifyContent="space-between" mb={0.5}>
+                          <Typography variant="body1" sx={{ color: '#1e3a8a', fontWeight: 700, fontSize: 16 }}>
+                            {ticket.title}
+                          </Typography>
+                          <Chip label={ticket.status} size="small" sx={{
+                            bgcolor: ticket.status === 'OPEN' ? '#dbeafe' : ticket.status === 'IN_PROGRESS' ? '#fef9c3' : '#dcfce7',
+                            color: ticket.status === 'OPEN' ? '#1d4ed8' : ticket.status === 'IN_PROGRESS' ? '#b45309' : '#15803d',
+                            fontWeight: 600, fontSize: 13, borderRadius: 9999
+                          }} />
+                        </Box>
+                        <Box display="flex" alignItems="center" gap={2} mt={0.5}>
+                          <Typography variant="caption" sx={{ color: '#64748b', fontSize: 12, minWidth: 0, flexShrink: 1 }}>
+                            {ticket.department}
+                          </Typography>
+                          <Typography variant="caption" sx={{ color: '#64748b', fontSize: 12, minWidth: 0, flexShrink: 1 }}>
+                            {ticket.location}
+                          </Typography>
+                          <Chip label={ticket.priority} size="small" sx={{
+                            bgcolor: ticket.priority === 'HIGH' ? '#fee2e2' : ticket.priority === 'MEDIUM' ? '#fef9c3' : '#dcfce7',
+                            color: ticket.priority === 'HIGH' ? '#b91c1c' : ticket.priority === 'MEDIUM' ? '#b45309' : '#15803d',
+                            fontWeight: 600, fontSize: 12, borderRadius: 9999, ml: 1
+                          }} />
+                        </Box>
+                      </Box>
+                    </TicketListCard>
                   ))}
                 </ul>
               ) : (

@@ -20,6 +20,7 @@ import { styled } from "@mui/material/styles";
 import Avatar from "@mui/material/Avatar";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
+import dayjs from "dayjs";
 
 // Consistent status chip styling (can be moved to a shared util if used elsewhere)
 const getStatusChipProps = (status) => {
@@ -253,7 +254,16 @@ const ViewTicketsTechnician = () => {
       header: "Last Updated",
       field: "updatedAt",
       sortable: true,
-      render: (row) => new Date(row.updatedAt).toLocaleString(),
+      render: (row) => (
+        <span style={{ display: 'flex', alignItems: 'center' }}>
+          <Typography variant="body2" sx={{ fontWeight: 500, color: '#1d4ed8', fontSize: 13 }}>
+            {dayjs(row.updatedAt).format('DD MMM YYYY')}
+          </Typography>
+          <Typography variant="caption" sx={{ color: '#64748b', fontSize: 11, letterSpacing: 0.2, ml: 1 }}>
+            {dayjs(row.updatedAt).format('hh:mm A')}
+          </Typography>
+        </span>
+      ),
     },
     {
       header: "Actions",
@@ -466,7 +476,14 @@ const ViewTicketsTechnician = () => {
                         </Box>
                       </HoverableDetailRow>
 
-                      <HoverableDetailRow>
+                      <HoverableDetailRow
+                        onClick={() => {
+                          if (selectedTicket.coordinator?.email) {
+                            window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(selectedTicket.coordinator.email)}`, '_blank');
+                          }
+                        }}
+                        style={selectedTicket.coordinator?.email ? { cursor: 'pointer' } : {}}
+                      >
                         <IconWrapper color="#F59E0B"> {/* Yellow for Coordinator */}
                           <FaUser />
                         </IconWrapper>
@@ -489,7 +506,14 @@ const ViewTicketsTechnician = () => {
                         </IconWrapper>
                         <Box flex={1}>
                           <Typography variant="body2" sx={{ color: '#6B7280', fontSize: '12px', fontWeight: 500 }}>LAST UPDATED</Typography>
-                          <Typography variant="body1" fontWeight={600} sx={{ color: '#1F2937' }}>{new Date(selectedTicket.updatedAt).toLocaleString()}</Typography>
+                          <span style={{ display: 'flex', alignItems: 'center' }}>
+                            <Typography variant="body1" fontWeight={600} sx={{ color: '#1F2937' }}>
+                              {dayjs(selectedTicket.updatedAt).format('DD MMM YYYY')}
+                            </Typography>
+                            <Typography variant="caption" sx={{ color: '#64748b', fontSize: 11, letterSpacing: 0.2, ml: 1 }}>
+                              {dayjs(selectedTicket.updatedAt).format('hh:mm A')}
+                            </Typography>
+                          </span>
                         </Box>
                       </HoverableDetailRow>
                     </Box>
