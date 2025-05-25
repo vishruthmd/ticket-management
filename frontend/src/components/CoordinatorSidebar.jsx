@@ -16,7 +16,7 @@ const navItems = [
 
 const sidebarVariants = {
   hidden: { x: -drawerWidth, opacity: 0 },
-  visible: { x: 0, opacity: 1, transition: { type: 'spring', stiffness: 400, damping: 32 } },
+  visible: { x: 0, opacity: 1, transition: { type: 'spring', stiffness: 700, damping: 18, mass: 0.6 } },
   exit: { x: -drawerWidth, opacity: 0, transition: { duration: 0.18 } },
 };
 
@@ -51,15 +51,22 @@ export default function CoordinatorSidebar({ open, onClose }) {
               </div>
               <nav className="flex-1 overflow-y-auto py-4 px-2">
                 {navItems.map((item) => (
-                  <Link
+                  <motion.div
                     key={item.text}
-                    to={item.path}
-                    onClick={onClose}
-                    className={`flex items-center gap-4 px-4 py-3 my-1 rounded-xl transition-all font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-700 focus:bg-blue-100 focus:text-blue-800 outline-none ${location.pathname === item.path ? 'bg-blue-100 text-blue-800 font-semibold shadow' : ''}`}
+                    whileHover={{ scale: 1.07 }}
+                    transition={{ type: 'spring', stiffness: 600, damping: 18, mass: 0.5 }}
+                    style={{ borderRadius: '0.75rem' }}
                   >
-                    <span className="text-lg opacity-80">{item.icon}</span>
-                    <span className="text-base">{item.text}</span>
-                  </Link>
+                    <Link
+                      key={item.text}
+                      to={item.path}
+                      onClick={onClose}
+                      className={`flex items-center gap-4 px-4 py-3 my-1 rounded-xl transition-all font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-700 focus:bg-blue-100 focus:text-blue-800 outline-none ${location.pathname === item.path ? 'bg-blue-100 text-blue-800 font-semibold shadow' : ''}`}
+                    >
+                      <span className="text-lg opacity-80">{item.icon}</span>
+                      <span className="text-base">{item.text}</span>
+                    </Link>
+                  </motion.div>
                 ))}
               </nav>
             </div>

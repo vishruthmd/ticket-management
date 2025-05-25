@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import PageHeader from '../components/ui/PageHeader';
 import Card from '../components/ui/Card';
-import { FaUsers, FaUserTie, FaClipboardList, FaExclamationTriangle, FaTimes } from 'react-icons/fa';
+import { FaUsers, FaUserTie, FaClipboardList, FaExclamationTriangle, FaTimes, FaClock } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
 import { axiosInstance } from '../libs/axios.libs';
 import Dialog from '@mui/material/Dialog';
@@ -43,6 +43,12 @@ const statCardsConfig = [
     statKey: 'urgentTickets',
     path: '/view-tickets-admin',
   },
+  {
+    title: 'Avg. Close Time',
+    icon: <FaClock className="h-6 w-6 text-gray-700" />,
+    color: 'bg-gray-100 text-gray-700',
+    statKey: 'avgCloseTime',
+  }
 ];
 
 const container = {
@@ -99,6 +105,7 @@ const AdminDashboard = () => {
     openTickets: 0,
     inProgressTickets: 0,
     urgentTickets: 0,
+    avgCloseTime: '--',
   });
   const [recentTickets, setRecentTickets] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -123,7 +130,16 @@ const AdminDashboard = () => {
         const inProgressTickets = inProgressRes.data.tickets?.length || 0;
         const tickets = ticketRes.data.tickets || [];
         const urgentTickets = tickets.filter(t => t.priority === 'HIGH' && t.status !== 'CLOSED').length;
-        setStats({ openTickets, inProgressTickets, urgentTickets });
+        
+        let avgCloseTimeValue = '--';
+        const closedTickets = tickets.filter(t => t.status === 'CLOSED' && t.createdAt && t.resolvedAt);
+        if (closedTickets.length > 0) {
+          const totalMs = closedTickets.reduce((sum, t) => sum + (new Date(t.resolvedAt) - new Date(t.createdAt)), 0);
+          const avgMs = totalMs / closedTickets.length;
+          avgCloseTimeValue = (avgMs / (1000 * 60 * 60)).toFixed(1) + 'h';
+        }
+
+        setStats({ openTickets, inProgressTickets, urgentTickets, avgCloseTime: avgCloseTimeValue });
         setRecentTickets(
           tickets
             .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
@@ -143,7 +159,7 @@ const AdminDashboard = () => {
             }))
         );
       } catch (e) {
-        setStats({ openTickets: 0, inProgressTickets: 0, urgentTickets: 0 });
+        setStats({ openTickets: 0, inProgressTickets: 0, urgentTickets: 0, avgCloseTime: '--' });
         setRecentTickets([]);
       } finally {
         setLoading(false);
@@ -205,7 +221,7 @@ const AdminDashboard = () => {
       >
         {statCardsConfig.map((card, index) => (
           <motion.div key={index} variants={item}>
-            <Card className="flex items-start cursor-pointer">
+            <Card className="flex items-start cursor-pointer p-4 transition-all duration-200 ease-in-out hover:scale-105 hover:shadow-xl hover:shadow-blue-600/70">
               <div className={`p-3 rounded-full mr-4 ${card.color}`}>
                 {card.icon}
               </div>
@@ -270,7 +286,7 @@ const AdminDashboard = () => {
               ) : recentTickets
                 .filter(ticket => ticket.assignedTo === 'Unassigned')
                 .map((ticket) => (
-                  <div key={ticket.id} className="p-3 border rounded-lg hover:bg-gray-50">
+                  <div key={ticket.id} className="p-3 border rounded-lg hover:bg-gray-50 transition-transform duration-150 ease-in-out hover:scale-102">
                     <div className="flex justify-between">
                       <span className="text-sm font-medium text-blue-600">{ticket.issue}</span>
                       <Chip {...getPriorityChipProps(ticket.priority)} size="small" />
@@ -283,7 +299,7 @@ const AdminDashboard = () => {
                     <div className="mt-2 flex justify-between text-xs text-gray-500">
                       <span>{ticket.createdAt}</span>
                       <button
-                        className="text-primary-600 hover:text-primary-800 font-semibold cursor-pointer"
+                        className="text-primary-600 font-semibold cursor-pointer transition-all duration-150 ease-in-out hover:scale-105 hover:text-blue-600"
                         onClick={() => {
                           setAssignModalTicket(ticket);
                           setAssignError(null);

@@ -66,9 +66,13 @@ const CreateUserPage = () => {
 
   return (
     <div>
-      <PageHeader title="Create User" description="Create a new user account" />
+      {/* <PageHeader title="Create User" description="Create a new user account" /> */}
       <div className="flex justify-center items-center py-8">
         <Card className="w-full max-w-md p-8 group transition-all duration-200 border-2 border-transparent hover:border-[#2563eb] hover:shadow-lg" style={{ transition: 'all 0.18s cubic-bezier(.4,0,.2,1)' }}>
+          <div className="text-center mb-6">
+            <h2 className="text-2xl font-bold text-gray-800">Create User Account</h2>
+            <p className="text-sm text-gray-500 mt-1">Fill in the details below to create a new user.</p>
+          </div>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             {/* Name */}
             <div className="form-control">
@@ -123,7 +127,7 @@ const CreateUserPage = () => {
                   onChange={(val) => setValue("department", val?.value)}
                 >
                   <div className="relative w-full">
-                    <div className="relative w-full cursor-default bg-white border border-gray-300 rounded-md">
+                    <div className="relative w-full cursor-default bg-white border border-gray-300 rounded-md focus-within:ring-2 focus-within:ring-primary-500 focus-within:border-primary-500">
                       <ComboboxInput
                         className="w-full bg-white text-gray-900 placeholder-gray-400 focus:outline-none py-2 px-3 rounded-md"
                         placeholder="Select Department"

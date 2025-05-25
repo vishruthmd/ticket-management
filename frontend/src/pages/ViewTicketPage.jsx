@@ -12,6 +12,8 @@ import Button from "@mui/material/Button";
 import { styled } from "@mui/material/styles";
 import Avatar from "@mui/material/Avatar";
 import LinearProgress from "@mui/material/LinearProgress";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
 
 const getStatusChipProps = (status) => {
   const normalized = (status || "").toUpperCase();
@@ -129,26 +131,26 @@ const IconWrapper = styled(Box)(({ theme, color = '#3B82F6' }) => ({
 const modalVariants = {
   hidden: { 
     opacity: 0, 
-    scale: 0.92, 
-    y: 25 
+    scale: 0.99,
+    y: 5 
   },
   visible: { 
     opacity: 1, 
     scale: 1, 
     y: 0,
     transition: { 
-      duration: 0.2, 
-      ease: [0.4, 0, 0.2, 1],
-      staggerChildren: 0.02 
+      duration: 0.01,
+      ease: "linear",
+      staggerChildren: 0
     } 
   },
   exit: { 
     opacity: 0, 
-    scale: 0.92, 
-    y: 25,
+    scale: 0.99, 
+    y: 5,
     transition: { 
-      duration: 0.15, 
-      ease: [0.4, 0, 0.2, 1] 
+      duration: 0.01,
+      ease: "linear"
     } 
   },
 };
@@ -157,20 +159,20 @@ const backdropVariants = {
   hidden: { opacity: 0 },
   visible: { 
     opacity: 1,
-    transition: { duration: 0.2 }
+    transition: { duration: 0.01, ease: "linear" }
   },
   exit: { 
     opacity: 0,
-    transition: { duration: 0.15 }
+    transition: { duration: 0.01, ease: "linear" }
   }
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 15 },
+  hidden: { opacity: 0, y: 5 },
   visible: { 
     opacity: 1, 
     y: 0,
-    transition: { duration: 0.2, ease: [0.4, 0, 0.2, 1] }
+    transition: { duration: 0.01, ease: "linear" }
   }
 };
 
@@ -209,6 +211,8 @@ const ViewTicketPage = () => {
   const [selectedTicket, setSelectedTicket] = useState(null);
   const [ticketToClose, setTicketToClose] = useState(null);
   const [updatingTicketId, setUpdatingTicketId] = useState(null);
+  const [priorityFilter, setPriorityFilter] = useState("ALL");
+  const [statusFilter, setStatusFilter] = useState("ALL");
 
   useEffect(() => {
     const fetchTickets = async () => {
@@ -263,15 +267,51 @@ const ViewTicketPage = () => {
     { header: "Location", field: "location", sortable: true },
     { header: "Device ID", field: "deviceId", sortable: true },
     {
-      header: "Priority",
+      header: (
+        <Box display="flex" alignItems="center" gap={0.5}>
+          Priority
+          <Select
+            size="small"
+            value={priorityFilter}
+            onChange={e => setPriorityFilter(e.target.value)}
+            variant="standard"
+            sx={{ ml: 0.5, minWidth: 60, maxWidth: 80, fontSize: 12, p: 0, '& .MuiSelect-select': { p: '2px 16px 2px 6px', fontSize: 12 } }}
+            disableUnderline
+            onClick={(e) => e.stopPropagation()}
+          >
+            <MenuItem value="ALL">All</MenuItem>
+            <MenuItem value="HIGH">High</MenuItem>
+            <MenuItem value="MEDIUM">Medium</MenuItem>
+            <MenuItem value="LOW">Low</MenuItem>
+          </Select>
+        </Box>
+      ),
       field: "priority",
-      sortable: true,
+      sortable: false,
       render: (row) => <Chip {...getPriorityChipProps(row.priority)} size="small" />,
     },
     {
-      header: "Status",
+      header: (
+        <Box display="flex" alignItems="center" gap={0.5}>
+          Status
+          <Select
+            size="small"
+            value={statusFilter}
+            onChange={e => setStatusFilter(e.target.value)}
+            variant="standard"
+            sx={{ ml: 0.5, minWidth: 80, maxWidth: 110, fontSize: 12, p: 0, '& .MuiSelect-select': { p: '2px 16px 2px 6px', fontSize: 12 } }}
+            disableUnderline
+            onClick={(e) => e.stopPropagation()}
+          >
+            <MenuItem value="ALL">All</MenuItem>
+            <MenuItem value="OPEN">Open</MenuItem>
+            <MenuItem value="IN_PROGRESS">In Progress</MenuItem>
+            <MenuItem value="CLOSED">Closed</MenuItem>
+          </Select>
+        </Box>
+      ),
       field: "status",
-      sortable: true,
+      sortable: false,
       render: (row) => <Chip {...getStatusChipProps(row.status)} size="small" />,
     },
     {
@@ -316,6 +356,12 @@ const ViewTicketPage = () => {
     },
   ];
 
+  const filteredTickets = tickets.filter(ticket => {
+    const priorityMatch = priorityFilter === "ALL" || (ticket.priority || "").toUpperCase() === priorityFilter;
+    const statusMatch = statusFilter === "ALL" || (ticket.status || "").toUpperCase() === statusFilter;
+    return priorityMatch && statusMatch;
+  });
+
   return (
     <div>
       <PageHeader
@@ -328,7 +374,7 @@ const ViewTicketPage = () => {
             ) : fetchError ? (
           <div className="text-center py-8 text-red-500">{fetchError}</div>
         ) : (
-          <DataTable columns={columns} data={tickets} />
+          <DataTable columns={columns} data={filteredTickets} />
         )}
       </Card>
 
@@ -351,7 +397,7 @@ const ViewTicketPage = () => {
             <motion.div
               variants={modalVariants}
               onClick={(e) => e.stopPropagation()}
-              style={{ maxWidth: '760px', width: '100%' }}
+              style={{ maxWidth: '640px', width: '100%' }}
             >
               <GlassCard>
                 {/* Header */}
@@ -374,7 +420,7 @@ const ViewTicketPage = () => {
                   <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.05 }}
+                    transition={{ delay: 0, duration: 0.01 }}
                     style={{ position: 'relative', zIndex: 1 }}
                   >
                     <Box display="flex" alignItems="center" justifyContent="space-between">
@@ -602,7 +648,7 @@ const ViewTicketPage = () => {
                   <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.05 }}
+                    transition={{ delay: 0, duration: 0.01 }}
                     style={{ position: 'relative', zIndex: 1 }}
                   >
                     <Avatar sx={{ 

@@ -125,7 +125,7 @@ const App = () => {
         <Route path="*" element={<Navigate to={
             authUser ? (
               authUser.role === "ADMIN" ? "/admin/dashboard" :
-              authUser.role === "COORDINATOR" ? "/coordinator/tickets" :
+              authUser.role === "COORDINATOR" ? "/coordinator/dashboard" :
               authUser.role === "TECHNICIAN" ? "/technician/tickets" :
               "/login"
             ) : "/login"
