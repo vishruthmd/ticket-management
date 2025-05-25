@@ -163,7 +163,7 @@ const ViewCoordinatorsPage = () => {
               </Box>
               <Divider sx={{ mb: 2 }} />
               {selectedCoordinator.coordinatorTickets.length > 0 ? (
-                <Box className="overflow-x-auto">
+                <Box className="overflow-x-auto" sx={{ maxHeight: 400, overflowY: 'auto', borderRadius: 2, border: '1px solid #e5e7eb', boxShadow: '0 1px 4px rgba(0,0,0,0.03)' }}>
                   <table className="min-w-full divide-y divide-gray-200">
                     <thead className="bg-gray-50">
                       <tr>

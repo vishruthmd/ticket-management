@@ -128,6 +128,18 @@ const IconWrapper = styled(Box)(({ theme, color = '#3B82F6' }) => ({
   }
 }));
 
+const HoverableDetailRow = styled(DetailRow)(({ theme }) => ({
+  cursor: 'pointer',
+  transition: 'all 0.18s cubic-bezier(0.4, 0, 0.2, 1)',
+  '&:hover': {
+    transform: 'scale(1.03)',
+    border: '1.5px solid #3B82F6',
+    boxShadow: '0 2px 12px 0 rgba(59,130,246,0.08)',
+    background: 'rgba(239,246,255,0.45)',
+    zIndex: 2,
+  },
+}));
+
 const modalVariants = {
   hidden: { 
     opacity: 0, 
@@ -508,7 +520,7 @@ const ViewTicketPage = () => {
                       Ticket Information
                     </Typography>
                     <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: { xs: 1.5, sm: 2.5 } }}>
-                      <DetailRow>
+                      <HoverableDetailRow>
                         <IconWrapper color="#3B82F6">
                           <FaTools />
                         </IconWrapper>
@@ -520,9 +532,9 @@ const ViewTicketPage = () => {
                             {selectedTicket.department}
                           </Typography>
                         </Box>
-                      </DetailRow>
+                      </HoverableDetailRow>
 
-                      <DetailRow>
+                      <HoverableDetailRow>
                         <IconWrapper color="#10B981">
                           <FaMapMarkerAlt />
                         </IconWrapper>
@@ -534,9 +546,9 @@ const ViewTicketPage = () => {
                             {selectedTicket.location}
                           </Typography>
                         </Box>
-                      </DetailRow>
+                      </HoverableDetailRow>
 
-                      <DetailRow>
+                      <HoverableDetailRow>
                         <IconWrapper color="#8B5CF6">
                           <FaDesktop />
                         </IconWrapper>
@@ -548,9 +560,9 @@ const ViewTicketPage = () => {
                             {selectedTicket.deviceId}
                           </Typography>
                         </Box>
-                      </DetailRow>
+                      </HoverableDetailRow>
 
-                      <DetailRow>
+                      <HoverableDetailRow>
                         <IconWrapper color="#F59E0B">
                           <FaUser />
                         </IconWrapper>
@@ -567,7 +579,7 @@ const ViewTicketPage = () => {
                             </Typography>
                           )}
                         </Box>
-                      </DetailRow>
+                      </HoverableDetailRow>
 
                       {selectedTicket.resolvedAt && (
                         <DetailRow>

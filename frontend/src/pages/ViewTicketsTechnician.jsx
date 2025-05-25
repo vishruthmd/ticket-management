@@ -87,6 +87,19 @@ const DetailRow = styled(Box)(({ theme }) => ({
   }
 }));
 
+// Add hoverable version for ticket info cards
+const HoverableDetailRow = styled(DetailRow)(({ theme }) => ({
+  cursor: 'pointer',
+  transition: 'all 0.18s cubic-bezier(0.4, 0, 0.2, 1)',
+  '&:hover': {
+    transform: 'scale(1.03)',
+    border: '1.5px solid #3B82F6',
+    boxShadow: '0 2px 12px 0 rgba(59,130,246,0.08)',
+    background: 'rgba(239,246,255,0.45)',
+    zIndex: 2,
+  },
+}));
+
 const IconWrapper = styled(Box)(({ theme, color = '#3B82F6' }) => ({
   width: '36px',
   height: '36px',
@@ -105,20 +118,20 @@ const IconWrapper = styled(Box)(({ theme, color = '#3B82F6' }) => ({
 }));
 
 const modalVariants = {
-  hidden: { opacity: 0, scale: 0.92, y: 25 },
-  visible: { opacity: 1, scale: 1, y: 0, transition: { duration: 0.12, ease: [0.4, 0, 0.2, 1], staggerChildren: 0.01 } },
-  exit: { opacity: 0, scale: 0.92, y: 25, transition: { duration: 0.15, ease: [0.4, 0, 0.2, 1] } },
+  hidden: { opacity: 0, scale: 0.99, y: 5 },
+  visible: { opacity: 1, scale: 1, y: 0, transition: { duration: 0.01, ease: 'linear', staggerChildren: 0 } },
+  exit: { opacity: 0, scale: 0.99, y: 5, transition: { duration: 0.01, ease: 'linear' } },
 };
 
 const backdropVariants = {
   hidden: { opacity: 0 },
-  visible: { opacity: 1, transition: { duration: 0.12 } },
-  exit: { opacity: 0, transition: { duration: 0.15 } }
+  visible: { opacity: 1, transition: { duration: 0.01, ease: 'linear' } },
+  exit: { opacity: 0, transition: { duration: 0.01, ease: 'linear' } }
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 15 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.15, ease: [0.4, 0, 0.2, 1] } }
+  hidden: { opacity: 0, y: 5 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.01, ease: 'linear' } }
 };
 
 const StyledButton = styled(Button)(({ theme, variant: buttonVariant }) => ({
@@ -320,7 +333,7 @@ const ViewTicketsTechnician = () => {
             >
               <GlassCard>
                 <Box sx={{ 
-                  background: '#43454a', // Solid blue from ViewTicketPage
+                  background: 'linear-gradient(135deg, #3B82F6, #1D4ED8)',
                   color: 'white', 
                   p: '16px 20px',
                   position: 'relative',
@@ -423,7 +436,7 @@ const ViewTicketsTechnician = () => {
                       Ticket Information
                     </Typography>
                     <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: { xs: 1, sm: 2 } }}>
-                      <DetailRow>
+                      <HoverableDetailRow>
                         <IconWrapper color="#3B82F6"> {/* Blue for Department */}
                           <FaTools />
                         </IconWrapper>
@@ -431,9 +444,9 @@ const ViewTicketsTechnician = () => {
                           <Typography variant="body2" sx={{ color: '#6B7280', fontSize: '12px', fontWeight: 500 }}>DEPARTMENT</Typography>
                           <Typography variant="body1" fontWeight={600} sx={{ color: '#1F2937' }}>{selectedTicket.department}</Typography>
                         </Box>
-                      </DetailRow>
+                      </HoverableDetailRow>
 
-                      <DetailRow>
+                      <HoverableDetailRow>
                         <IconWrapper color="#10B981"> {/* Green for Location */}
                           <FaMapMarkerAlt />
                         </IconWrapper>
@@ -441,9 +454,9 @@ const ViewTicketsTechnician = () => {
                           <Typography variant="body2" sx={{ color: '#6B7280', fontSize: '12px', fontWeight: 500 }}>LOCATION</Typography>
                           <Typography variant="body1" fontWeight={600} sx={{ color: '#1F2937' }}>{selectedTicket.location}</Typography>
                         </Box>
-                      </DetailRow>
+                      </HoverableDetailRow>
 
-                      <DetailRow>
+                      <HoverableDetailRow>
                         <IconWrapper color="#8B5CF6"> {/* Purple for Device ID */}
                           <FaDesktop />
                         </IconWrapper>
@@ -451,9 +464,9 @@ const ViewTicketsTechnician = () => {
                           <Typography variant="body2" sx={{ color: '#6B7280', fontSize: '12px', fontWeight: 500 }}>DEVICE ID</Typography>
                           <Typography variant="body1" fontWeight={600} sx={{ color: '#1F2937', fontFamily: 'monospace' }}>{selectedTicket.deviceId}</Typography>
                         </Box>
-                      </DetailRow>
+                      </HoverableDetailRow>
 
-                      <DetailRow>
+                      <HoverableDetailRow>
                         <IconWrapper color="#F59E0B"> {/* Yellow for Coordinator */}
                           <FaUser />
                         </IconWrapper>
@@ -468,9 +481,9 @@ const ViewTicketsTechnician = () => {
                             </Typography>
                           )}
                         </Box>
-                      </DetailRow>
+                      </HoverableDetailRow>
 
-                      <DetailRow>
+                      <HoverableDetailRow>
                         <IconWrapper color="#EF4444"> {/* Red for Last Updated */}
                           <FaClock />
                         </IconWrapper>
@@ -478,7 +491,7 @@ const ViewTicketsTechnician = () => {
                           <Typography variant="body2" sx={{ color: '#6B7280', fontSize: '12px', fontWeight: 500 }}>LAST UPDATED</Typography>
                           <Typography variant="body1" fontWeight={600} sx={{ color: '#1F2937' }}>{new Date(selectedTicket.updatedAt).toLocaleString()}</Typography>
                         </Box>
-                      </DetailRow>
+                      </HoverableDetailRow>
                     </Box>
                   </motion.div>
 
