@@ -91,7 +91,29 @@ const ViewCoordinatorsPage = () => {
           color="primary"
           size="small"
           onClick={() => setSelectedCoordinator(row)}
-          sx={{ borderRadius: 2, fontWeight: 600 }}
+          sx={{
+            borderRadius: 2,
+            fontWeight: 600,
+            borderWidth: 2,
+            borderColor: '#2563eb',
+            color: '#2563eb',
+            background: 'white',
+            transition: 'all 0.18s cubic-bezier(.4,0,.2,1)',
+            boxShadow: 'none',
+            '&:hover': {
+              background: '#eff6ff',
+              borderColor: '#1d4ed8',
+              color: '#1d4ed8',
+              transform: 'scale(1.05)',
+              boxShadow: '0 2px 8px 0 rgba(37,99,235,0.08)',
+            },
+            '&:active': {
+              background: '#dbeafe',
+              borderColor: '#1e40af',
+              color: '#1e40af',
+              transform: 'scale(0.98)',
+            },
+          }}
         >
           View
         </Button>

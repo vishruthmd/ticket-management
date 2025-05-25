@@ -135,6 +135,8 @@ const AssignTechnicianPage = () => {
   const [assigning, setAssigning] = useState(false);
   const [assignError, setAssignError] = useState(null);
   const [techLoading, setTechLoading] = useState(false);
+  const [priorityFilter, setPriorityFilter] = useState("ALL");
+  const [statusFilter, setStatusFilter] = useState("ALL");
 
   useEffect(() => {
     const fetchOpenTickets = async () => {
@@ -186,6 +188,12 @@ const AssignTechnicianPage = () => {
     }
   };
 
+  const filteredTickets = tickets.filter(ticket => {
+    const priorityMatch = priorityFilter === "ALL" || (ticket.priority || "").toUpperCase() === priorityFilter;
+    const statusMatch = statusFilter === "ALL" || (ticket.status || "").toUpperCase() === statusFilter;
+    return priorityMatch && statusMatch;
+  });
+
   return (
     <div>
       <PageHeader
@@ -211,18 +219,56 @@ const AssignTechnicianPage = () => {
                 ),
               },
               { header: "Department", field: "department", sortable: true },
-              { header: "Location", field: "location", sortable: true },
-              { header: "Device ID", field: "deviceId", sortable: true },
               {
-                header: "Priority",
-                field: "priority",
+                header: "Location",
+                field: "location",
                 sortable: true,
+                render: (row) => (row.location ? row.location.toUpperCase() : ""),
+              },
+              {
+                header: (
+                  <Box display="flex" alignItems="center" gap={0.5}>
+                    Priority
+                    <Select
+                      size="small"
+                      value={priorityFilter}
+                      onChange={e => setPriorityFilter(e.target.value)}
+                      variant="standard"
+                      sx={{ ml: 0.5, minWidth: 60, maxWidth: 80, fontSize: 12, p: 0, '& .MuiSelect-select': { p: '2px 16px 2px 6px', fontSize: 12 } }}
+                      disableUnderline
+                    >
+                      <MenuItem value="ALL">All</MenuItem>
+                      <MenuItem value="HIGH">High</MenuItem>
+                      <MenuItem value="MEDIUM">Medium</MenuItem>
+                      <MenuItem value="LOW">Low</MenuItem>
+                    </Select>
+                  </Box>
+                ),
+                field: "priority",
+                sortable: false,
                 render: (row) => <Chip {...getPriorityChipProps(row.priority || "MEDIUM") } size="small" />,
               },
               {
-                header: "Status",
+                header: (
+                  <Box display="flex" alignItems="center" gap={0.5}>
+                    Status
+                    <Select
+                      size="small"
+                      value={statusFilter}
+                      onChange={e => setStatusFilter(e.target.value)}
+                      variant="standard"
+                      sx={{ ml: 0.5, minWidth: 80, maxWidth: 110, fontSize: 12, p: 0, '& .MuiSelect-select': { p: '2px 16px 2px 6px', fontSize: 12 } }}
+                      disableUnderline
+                    >
+                      <MenuItem value="ALL">All</MenuItem>
+                      <MenuItem value="OPEN">Open</MenuItem>
+                      <MenuItem value="IN_PROGRESS">In Progress</MenuItem>
+                      <MenuItem value="CLOSED">Closed</MenuItem>
+                    </Select>
+                  </Box>
+                ),
                 field: "status",
-                sortable: true,
+                sortable: false,
                 render: (row) => <Chip {...getStatusChipProps(row.status)} size="small" />,
               },
               {
@@ -243,18 +289,40 @@ const AssignTechnicianPage = () => {
                 sortable: false,
                 render: (row) => (
                   <Button
-                    variant="contained"
+                    variant="outlined"
                     color="primary"
                     size="small"
                     onClick={() => setSelectedTicket(row)}
-                    sx={{ borderRadius: 2, fontWeight: 600 }}
+                    sx={{
+                      borderRadius: 2,
+                      fontWeight: 600,
+                      borderWidth: 2,
+                      borderColor: '#2563eb',
+                      color: '#2563eb',
+                      background: 'white',
+                      transition: 'all 0.18s cubic-bezier(.4,0,.2,1)',
+                      boxShadow: 'none',
+                      '&:hover': {
+                        background: '#eff6ff',
+                        borderColor: '#1d4ed8',
+                        color: '#1d4ed8',
+                        transform: 'scale(1.05)',
+                        boxShadow: '0 2px 8px 0 rgba(37,99,235,0.08)',
+                      },
+                      '&:active': {
+                        background: '#dbeafe',
+                        borderColor: '#1e40af',
+                        color: '#1e40af',
+                        transform: 'scale(0.98)',
+                      },
+                    }}
                   >
                     Assign
                   </Button>
                 ),
               },
             ]}
-            data={tickets}
+            data={filteredTickets}
           />
         )}
       </Card>
@@ -389,7 +457,7 @@ const AssignTechnicianPage = () => {
                       Location
                     </Typography>
                     <Typography variant="body1" color="text.primary">
-                      {selectedTicket.location}
+                      {selectedTicket.location ? selectedTicket.location.toUpperCase() : ""}
                     </Typography>
                   </Grid>
                   <Grid item xs={12} sm={6}>
@@ -445,18 +513,6 @@ const AssignTechnicianPage = () => {
                         N/A
                       </Typography>
                     )}
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <Typography
-                      variant="subtitle2"
-                      color="text.secondary"
-                      gutterBottom
-                    >
-                      Device ID
-                    </Typography>
-                    <Typography variant="body1" color="text.primary">
-                      {selectedTicket.deviceId}
-                    </Typography>
                   </Grid>
                 </Grid>
                 <Divider sx={{ mb: 3 }} />

@@ -18,6 +18,8 @@ import IconButton from "@mui/material/IconButton";
 import { motion, AnimatePresence } from "framer-motion";
 import { styled } from "@mui/material/styles";
 import Avatar from "@mui/material/Avatar";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
 
 // Consistent status chip styling (can be moved to a shared util if used elsewhere)
 const getStatusChipProps = (status) => {
@@ -153,6 +155,8 @@ const ViewTicketsTechnician = () => {
   const [loading, setLoading] = useState(true);
   const [fetchError, setFetchError] = useState(null);
   const [selectedTicket, setSelectedTicket] = useState(null);
+  const [priorityFilter, setPriorityFilter] = useState("ALL");
+  const [statusFilter, setStatusFilter] = useState("ALL");
   // const [ticketToClose, setTicketToClose] = useState(null); // Logic for closing can be added later if needed
   // const [updatingTicketId, setUpdatingTicketId] = useState(null);
 
@@ -172,8 +176,16 @@ const ViewTicketsTechnician = () => {
     fetchTickets();
   }, []);
 
+  const filteredTickets = tickets.filter(ticket => {
+    const priorityMatch = priorityFilter === "ALL" || (ticket.priority || "").toUpperCase() === priorityFilter;
+    const statusMatch = statusFilter === "ALL" || (ticket.status || "").toUpperCase() === statusFilter;
+    return priorityMatch && statusMatch;
+  });
+
   const columns = [
-    { header: "Title", field: "title", sortable: true },
+    { header: "Title", field: "title", sortable: true, render: (row) => (
+      <div className="max-w-[175px] truncate" title={row.title}>{row.title}</div>
+    ), cellClass: 'max-w-[175px] truncate' },
     { header: "Department", field: "department", sortable: true },
     {
       header: "Location",
@@ -183,15 +195,45 @@ const ViewTicketsTechnician = () => {
     },
     { header: "Device ID", field: "deviceId", sortable: true },
     {
-      header: "Priority",
+      header: (
+        <Box display="flex" alignItems="center" gap={1}>
+          Priority
+          <Select
+            size="small"
+            value={priorityFilter}
+            onChange={e => setPriorityFilter(e.target.value)}
+            sx={{ ml: 1, minWidth: 90, fontSize: 13 }}
+          >
+            <MenuItem value="ALL">All</MenuItem>
+            <MenuItem value="HIGH">High</MenuItem>
+            <MenuItem value="MEDIUM">Medium</MenuItem>
+            <MenuItem value="LOW">Low</MenuItem>
+          </Select>
+        </Box>
+      ),
       field: "priority",
-      sortable: true,
+      sortable: false,
       render: (row) => <Chip {...getPriorityChipProps(row.priority)} size="small" />,
     },
     {
-      header: "Status",
+      header: (
+        <Box display="flex" alignItems="center" gap={1}>
+          Status
+          <Select
+            size="small"
+            value={statusFilter}
+            onChange={e => setStatusFilter(e.target.value)}
+            sx={{ ml: 1, minWidth: 120, fontSize: 13 }}
+          >
+            <MenuItem value="ALL">All</MenuItem>
+            <MenuItem value="OPEN">Open</MenuItem>
+            <MenuItem value="IN_PROGRESS">In Progress</MenuItem>
+            <MenuItem value="CLOSED">Closed</MenuItem>
+          </Select>
+        </Box>
+      ),
       field: "status",
-      sortable: true,
+      sortable: false,
       render: (row) => <Chip {...getStatusChipProps(row.status)} size="small" />,
     },
     {
@@ -205,17 +247,37 @@ const ViewTicketsTechnician = () => {
       field: "actions",
       sortable: false,
       render: (row) => (
-        <Box display="flex" gap={1}>
-          <Button
-            variant="outlined"
-            size="small"
-            onClick={() => setSelectedTicket(row)}
-            startIcon={<Eye size={16} />}
-            sx={{ borderRadius: 1.5, textTransform: 'none'}}
-          >
-            View
-          </Button>
-        </Box>
+        <Button
+          variant="outlined"
+          color="primary"
+          size="small"
+          onClick={() => setSelectedTicket(row)}
+          sx={{
+            borderRadius: 2,
+            fontWeight: 600,
+            borderWidth: 2,
+            borderColor: '#2563eb',
+            color: '#2563eb',
+            background: 'white',
+            transition: 'all 0.18s cubic-bezier(.4,0,.2,1)',
+            boxShadow: 'none',
+            '&:hover': {
+              background: '#eff6ff',
+              borderColor: '#1d4ed8',
+              color: '#1d4ed8',
+              transform: 'scale(1.05)',
+              boxShadow: '0 2px 8px 0 rgba(37,99,235,0.08)',
+            },
+            '&:active': {
+              background: '#dbeafe',
+              borderColor: '#1e40af',
+              color: '#1e40af',
+              transform: 'scale(0.98)',
+            },
+          }}
+        >
+          View
+        </Button>
       ),
     },
   ];
@@ -232,7 +294,7 @@ const ViewTicketsTechnician = () => {
             ) : fetchError ? (
           <Typography color="error" sx={{ textAlign: 'center', py: 8 }}>{fetchError}</Typography>
         ) : (
-          <DataTable columns={columns} data={tickets} />
+          <DataTable columns={columns} data={filteredTickets} />
         )}
       </Card>
 

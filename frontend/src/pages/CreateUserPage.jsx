@@ -68,7 +68,7 @@ const CreateUserPage = () => {
     <div>
       <PageHeader title="Create User" description="Create a new user account" />
       <div className="flex justify-center items-center py-8">
-        <Card className="w-full max-w-md p-8">
+        <Card className="w-full max-w-md p-8 group transition-all duration-200 border-2 border-transparent hover:border-[#2563eb] hover:shadow-lg" style={{ transition: 'all 0.18s cubic-bezier(.4,0,.2,1)' }}>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             {/* Name */}
             <div className="form-control">
@@ -122,7 +122,7 @@ const CreateUserPage = () => {
                   value={departmentOptions.find((d) => d.value === watch("department")) || null}
                   onChange={(val) => setValue("department", val?.value)}
                 >
-                  <div className="relative">
+                  <div className="relative w-full">
                     <div className="relative w-full cursor-default bg-white border border-gray-300 rounded-md">
                       <ComboboxInput
                         className="w-full bg-white text-gray-900 placeholder-gray-400 focus:outline-none py-2 px-3 rounded-md"
@@ -221,13 +221,35 @@ const CreateUserPage = () => {
             {/* Submit */}
             <button
               type="submit"
-              className="btn btn-primary w-full"
+              className="w-full py-2 px-4 rounded-md font-semibold border-2 border-[#2563eb] text-[#2563eb] bg-white transition-all duration-200 shadow-none focus:outline-none focus:ring-2 focus:ring-blue-200"
+              style={{
+                transition: 'all 0.18s cubic-bezier(.4,0,.2,1)',
+              }}
               disabled={isCreatingUser}
+              onMouseDown={e => e.currentTarget.style.transform = 'scale(0.98)'}
+              onMouseUp={e => e.currentTarget.style.transform = 'scale(1)'}
+              onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+              onFocus={e => e.currentTarget.style.boxShadow = '0 2px 8px 0 rgba(37,99,235,0.08)'}
+              onBlur={e => e.currentTarget.style.boxShadow = 'none'}
+              onMouseOver={e => {
+                e.currentTarget.style.background = '#eff6ff';
+                e.currentTarget.style.borderColor = '#1d4ed8';
+                e.currentTarget.style.color = '#1d4ed8';
+                e.currentTarget.style.transform = 'scale(1.05)';
+                e.currentTarget.style.boxShadow = '0 2px 8px 0 rgba(37,99,235,0.08)';
+              }}
+              onMouseOut={e => {
+                e.currentTarget.style.background = 'white';
+                e.currentTarget.style.borderColor = '#2563eb';
+                e.currentTarget.style.color = '#2563eb';
+                e.currentTarget.style.transform = 'scale(1)';
+                e.currentTarget.style.boxShadow = 'none';
+              }}
             >
               {isCreatingUser ? (
                 <Loader2 className="h-5 w-5 animate-spin" />
               ) : (
-                "Sign Up"
+                "Create User"
               )}
             </button>
           </form>

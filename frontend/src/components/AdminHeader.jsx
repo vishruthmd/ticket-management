@@ -48,9 +48,25 @@ export default function AdminHeader({ children }) {
                 sx={{
                   borderRadius: '20px',
                   textTransform: 'none',
+                  borderWidth: 2,
+                  borderColor: '#2563eb',
+                  color: '#2563eb',
+                  background: 'white',
+                  fontWeight: 600,
+                  transition: 'all 0.18s cubic-bezier(.4,0,.2,1)',
+                  boxShadow: 'none',
                   '&:hover': {
-                    backgroundColor: 'primary.main',
-                    color: 'white',
+                    backgroundColor: '#eff6ff',
+                    color: '#1d4ed8',
+                    borderColor: '#1d4ed8',
+                    transform: 'scale(1.05)',
+                    boxShadow: '0 2px 8px 0 rgba(37,99,235,0.08)',
+                  },
+                  '&:active': {
+                    backgroundColor: '#dbeafe',
+                    color: '#1e40af',
+                    borderColor: '#1e40af',
+                    transform: 'scale(0.98)',
                   },
                 }}
               >
