@@ -10,7 +10,7 @@ const createTicketSchema = z.object({
     .string()
     .min(3, "description must be atleast 3 chars long")
     .max(500, "description must be at most 500 chars long"),
-  department: z.enum(DEPARTMENTS),
+  department: z.enum(DEPARTMENTS).optional(),
   deviceType: z.string().optional(),
   deviceId: z.string(),
   location: z.string(),

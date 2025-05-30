@@ -30,6 +30,7 @@ const isLoggedIn = async (req, res, next) => {
         name: true,
         email: true,
         role: true,
+        department: true,
         image: true,
       },
     });

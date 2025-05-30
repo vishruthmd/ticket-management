@@ -33,8 +33,10 @@ import { STATUSES } from "../libs/constants.js";
 // }
 
 const createTicket = async (req, res) => {
-  const { title, department, deviceId, location, description, priority } = req.body;
-
+  console.log(req.user);
+  
+  const { title, deviceId, location, description, priority } = req.body;
+  const department = req.user.department;
   try {
     const newTicket = await db.ticket.create({
       data: {
@@ -60,7 +62,7 @@ const createTicket = async (req, res) => {
     });
   } catch (error) {
     console.error("Error creating ticket:", error);
-    res.status(500).json({
+    res.status(501).json({
       success: false,
       message: "Failed to create ticket",
     });

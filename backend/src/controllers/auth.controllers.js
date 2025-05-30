@@ -5,7 +5,7 @@ import { userRole } from "../generated/prisma/index.js";
 import jwt from "jsonwebtoken";
 
 export const registerUser = async (req, res) => {
-  const { email, password, name, role } = req.body;
+  const { email, password, name, role, department } = req.body;
 
   try {
     // check existing
@@ -31,6 +31,7 @@ export const registerUser = async (req, res) => {
         password: hashedPassword,
         name,
         role: role.toUpperCase(),
+        department: department.toUpperCase(),
       },
     });
 
@@ -55,6 +56,7 @@ export const registerUser = async (req, res) => {
         email: newUser.email,
         name: newUser.name,
         role: newUser.role,
+        department: newUser.department,
         image: newUser.image,
       },
     });

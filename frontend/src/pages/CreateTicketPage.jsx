@@ -22,6 +22,9 @@ const PRIORITIES = [
   { value: 'HIGH', label: 'High', bgcolor: '#ffeeee', color: '#c62828', border: '#ffcdd2' },
 ];
 
+
+
+
 const Bg = styled(Box)`
   min-height: 100vh;
   width: 100vw;
@@ -122,7 +125,6 @@ const CreateTicketPage = () => {
   const [ticket, setTicket] = useState({
     title: '',
     description: '',
-    department: '',
     lab: '',
     deviceType: '',
     deviceId: '',
@@ -152,7 +154,6 @@ const CreateTicketPage = () => {
 
     const ticketDataToSend = {
       title: ticket.title,
-      department: ticket.department,
       deviceId: ticket.deviceId,
       location: ticket.lab,
       description: ticket.description,
@@ -167,7 +168,6 @@ const CreateTicketPage = () => {
       setTicket({
         title: '',
         description: '',
-        department: '',
         lab: '',
         deviceType: '',
         deviceId: '',
@@ -232,25 +232,6 @@ const CreateTicketPage = () => {
             />
             <FloatingLabelField
               fullWidth
-              select
-              label="Department"
-              name="department"
-              value={ticket.department}
-              onChange={handleChange}
-              required
-              variant="outlined"
-            >
-              <MenuItem value="" disabled>
-                Select Department
-              </MenuItem>
-              {DEPARTMENTS.map((dep) => (
-                <MenuItem key={dep} value={dep}>
-                  {dep}
-                </MenuItem>
-              ))}
-            </FloatingLabelField>
-            <FloatingLabelField
-              fullWidth
               label="Lab / Location"
               name="lab"
               value={ticket.lab}
@@ -278,23 +259,73 @@ const CreateTicketPage = () => {
               variant="outlined"
               placeholder="Serial number or ID"
             />
-            <Box display="flex" flexDirection="column" alignItems="flex-start" justifyContent="center" sx={{ mt: isMobile ? 1 : 0 }}>
-              {/* <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 700, color: '#374151', letterSpacing: 0.2 }}>
-                Priority
-              </Typography> */}
-              <Box display="flex" gap={2}>
+            
+            {/* Redesigned Priority section */}
+            <Box
+              sx={{
+                gridColumn: "1 / -1",
+                background: "#f8f9fa",
+                borderRadius: 2,
+                border: "1px solid #e0e3e7",
+                padding: 2,
+                mt: 1
+              }}
+            >
+              <Typography
+                variant="subtitle1"
+                fontWeight={600}
+                sx={{ mb: 2, color: "#37474f", letterSpacing: 0.2 }}
+              >
+                Select Priority Level
+              </Typography>
+              <Box 
+                display="flex" 
+                sx={{ 
+                  justifyContent: "space-between", 
+                  gap: 2,
+                  [isMobile ? "flexDirection" : ""]: isMobile ? "column" : "row"
+                }}
+              >
                 {PRIORITIES.map((p) => (
-                  <PriorityButton
+                  <Button
                     key={p.value}
-                    bgcolor={p.bgcolor}
-                    color={p.color}
-                    border={p.border}
-                    selected={ticket.priority === p.value}
-                    type="button"
+                    variant="contained"
+                    fullWidth
+                    disableElevation={!ticket.priority === p.value}
                     onClick={() => handlePriority(p.value)}
+                    sx={{
+                      background: ticket.priority === p.value ? p.bgcolor : "#ffffff",
+                      color: p.color,
+                      border: `1.5px solid ${p.border}`,
+                      borderColor: ticket.priority === p.value ? p.color : p.border,
+                      fontWeight: 600,
+                      fontSize: '0.95rem',
+                      borderRadius: 2,
+                      padding: '12px',
+                      height: "56px",
+                      boxShadow: ticket.priority === p.value ? `0 4px 12px 0 ${p.color}33` : "none",
+                      position: "relative",
+                      transition: "all 0.2s ease",
+                      "&:hover": {
+                        background: ticket.priority === p.value ? p.bgcolor : "#ffffff",
+                        borderColor: p.color,
+                        transform: "translateY(-2px)",
+                        boxShadow: `0 6px 16px 0 ${p.color}30`
+                      },
+                      "&::before": ticket.priority === p.value ? {
+                        content: '""',
+                        position: "absolute",
+                        bottom: -8,
+                        left: "calc(50% - 8px)",
+                        width: 16,
+                        height: 16,
+                        background: p.color,
+                        borderRadius: "50%"
+                      } : {}
+                    }}
                   >
-                    {p.label}
-                  </PriorityButton>
+                    {p.label} Priority
+                  </Button>
                 ))}
               </Box>
             </Box>
@@ -321,7 +352,6 @@ const CreateTicketPage = () => {
                 setTicket({
                   title: '',
                   description: '',
-                  department: '',
                   lab: '',
                   deviceType: '',
                   deviceId: '',
